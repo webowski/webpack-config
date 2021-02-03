@@ -3,12 +3,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 let mode = process.env.NODE_ENV || 'development'
 let target = mode === 'development' ? 'web' : 'browserslist'
 
-const postcssOptions = {
-	postcssOptions: {
-		plugins: ['postcss-preset-env']
-	}
-}
-
 module.exports = {
 	mode: mode,
 
@@ -17,13 +11,17 @@ module.exports = {
 
 			// Styles
 			{
-				test: /\.(s[ac]|c)ss$/i,
+				test: /\.(scss|css)$/i,
 				use: [
 					MiniCssExtractPlugin.loader,
 					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: postcssOptions
+						options: {
+							postcssOptions: {
+								plugins: ['postcss-preset-env']
+							}
+						}
 					},
 					'sass-loader',
 				]
@@ -31,12 +29,15 @@ module.exports = {
 
 			// Scripts
 			{
-				test: /\.js$/,
+				test: /\.jsx?$/,
 				exclude: /node_modules/,
 				use: {
 					loader: 'babel-loader',
 					options: {
-						presets: ['@babel/preset-env']
+						presets: [
+							'@babel/preset-env',
+							['@babel/preset-react', { runtime: 'automatic' }],
+						]
 					}
 				}
 			}
@@ -47,6 +48,10 @@ module.exports = {
 	plugins: [
 		new MiniCssExtractPlugin()
 	],
+
+	resolve: {
+		extensions: ['.js', '.jsx']
+	},
 
 	target: target,
 	devtool: 'source-map',
