@@ -6,6 +6,10 @@ let target = mode === 'development' ? 'web' : 'browserslist'
 module.exports = {
 	mode: mode,
 
+	output: {
+		assetModuleFilename: 'images/[hash][ext][query]'
+	},
+
 	module: {
 		rules: [
 
@@ -13,7 +17,12 @@ module.exports = {
 			{
 				test: /\.(scss|css)$/i,
 				use: [
-					MiniCssExtractPlugin.loader,
+					{
+						loader: MiniCssExtractPlugin.loader,
+						options: {
+							publicPath: ''
+						}
+					},
 					'css-loader',
 					{
 						loader: 'postcss-loader',
@@ -25,6 +34,13 @@ module.exports = {
 					},
 					'sass-loader',
 				]
+			},
+
+			// Images
+			{
+				test: /\.(png|jpe?g|gif|svg)$/i,
+				type: 'asset/resource',
+				// type: 'asset',
 			},
 
 			// Scripts

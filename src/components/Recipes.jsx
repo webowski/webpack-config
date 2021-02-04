@@ -26,7 +26,7 @@ const Recipes = () => {
 			<ul>
 				{Object.keys(recipe).map((material) => (
 					<li key={material}>
-						[material]: {recipe[material]}
+						{material}: {recipe[material]}
 					</li>
 				))}
 			</ul>
