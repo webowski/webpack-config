@@ -10,8 +10,10 @@ let target = mode === 'development' ? 'web' : 'browserslist'
 module.exports = {
 	mode: mode,
 
+	entry: './scripts/index.js',
+
 	output: {
-		path: path.resolve(__dirname, 'dist'),
+		path: __dirname,
 		assetModuleFilename: 'images/[hash][ext][query]',
 	},
 
@@ -72,11 +74,11 @@ module.exports = {
 	},
 
 	plugins: [
-		new CleanWebpackPlugin(),
+		// new CleanWebpackPlugin(),
 		new MiniCssExtractPlugin(),
-		new HtmlWebpackPlugin({
-			template: './src/index.html'
-		}),
+		// new HtmlWebpackPlugin({
+		// 	template: './src/index.html'
+		// }),
 		new SVGSpritemapPlugin('./src/images/icons/*.svg', {
 			output: {
 				filename: 'icons.svg'
@@ -94,7 +96,7 @@ module.exports = {
 	target: target,
 	devtool: 'source-map',
 	devServer: {
-		contentBase: './dist',
+		contentBase: './',
 		hot: true,
 	}
 }

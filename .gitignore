@@ -1,3 +1,9 @@
 node_modules
 package-lock.json
 dist
+
+icons.svg
+index.html
+main.css
+main.css.map
+main.js
