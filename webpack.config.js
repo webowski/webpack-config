@@ -1,6 +1,7 @@
 const path                   = require('path')
 const MiniCssExtractPlugin   = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin      = require('html-webpack-plugin')
+const SVGSpritemapPlugin     = require('svg-spritemap-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 let mode = process.env.NODE_ENV || 'development'
@@ -70,6 +71,14 @@ module.exports = {
 		new MiniCssExtractPlugin(),
 		new HtmlWebpackPlugin({
 			template: './src/index.html'
+		}),
+		new SVGSpritemapPlugin('./src/images/icons/*.svg', {
+			output: {
+				filename: 'icons.svg'
+			},
+			sprite: {
+				prefix: false
+			}
 		}),
 	],
 
