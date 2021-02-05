@@ -1,8 +1,6 @@
 const path                   = require('path')
 const MiniCssExtractPlugin   = require('mini-css-extract-plugin')
-// const HtmlWebpackPlugin      = require('html-webpack-plugin')
 const SVGSpritemapPlugin     = require('svg-spritemap-webpack-plugin')
-// const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 let mode = process.env.NODE_ENV || 'development'
 let target = mode === 'development' ? 'web' : 'browserslist'
@@ -10,7 +8,10 @@ let target = mode === 'development' ? 'web' : 'browserslist'
 module.exports = {
 	mode: mode,
 
-	entry: './scripts/index.js',
+	entry: [
+		'./styles/index.scss',
+		'./scripts/index.js',
+	],
 
 	output: {
 		path: __dirname,
@@ -53,7 +54,6 @@ module.exports = {
 			{
 				test: /\.(png|jpe?g|gif|svg)$/i,
 				type: 'asset/resource',
-				// type: 'asset',
 			},
 
 			// Scripts
@@ -75,13 +75,9 @@ module.exports = {
 	},
 
 	plugins: [
-		// new CleanWebpackPlugin(),
 		new MiniCssExtractPlugin({
 			filename: 'styles/[name].min.css',
 		}),
-		// new HtmlWebpackPlugin({
-		// 	template: './templates/index.html'
-		// }),
 		new SVGSpritemapPlugin('./images/icons/*.svg', {
 			output: {
 				filename: 'images/icons.svg'
