@@ -93,9 +93,13 @@ module.exports = {
 	},
 
 	target: target,
-	devtool: 'source-map',
+	devtool: mode === 'development' ? 'source-map' : false,
 	devServer: {
 		contentBase: './',
+		proxy: {
+      '/api': 'http://localhost:3000',
+			pathRewrite: { '^/api' : '' }
+    },
 		hot: true,
 	}
 }
