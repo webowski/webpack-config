@@ -1,4 +1,4 @@
-const path                   = require('path')
+const { resolve }            = require('path')
 const MiniCssExtractPlugin   = require('mini-css-extract-plugin')
 const SVGSpritemapPlugin     = require('svg-spritemap-webpack-plugin')
 
@@ -8,15 +8,18 @@ let target = mode === 'development' ? 'web' : 'browserslist'
 module.exports = {
 	mode: mode,
 
-	entry: [
-		'./styles/index.scss',
-		'./scripts/index.js',
-	],
+	context: resolve(__dirname),
+
+	entry: {
+		styles: './styles/index.scss',
+		bundle: './scripts/index.js',
+	},
 
 	output: {
 		path: __dirname,
-		filename: 'scripts/bundle.min.js',
+		filename: 'scripts/[name].min.js',
 		assetModuleFilename: 'images/[hash][ext][query]',
+		// chunkFilename: '[id].[chunkhash].js',
 	},
 
 	module: {
@@ -69,7 +72,7 @@ module.exports = {
 						cacheDirectory: true,
 					}
 				}
-			}
+			},
 
 		]
 	},
@@ -95,11 +98,14 @@ module.exports = {
 	target: target,
 	devtool: mode === 'development' ? 'source-map' : false,
 	devServer: {
-		contentBase: './',
-		proxy: {
-      '/api': 'http://localhost:3000',
-			pathRewrite: { '^/api' : '' }
-    },
-		hot: true,
+		port: 3000,
+		// proxy: {
+		// 	'/api': 'http://localhost:3000',
+		// 	pathRewrite: { '^/api' : '' }
+		// },
+		// publicPath: '/',
+		// hot: true,
+		contentBase: resolve(__dirname),
+		watchContentBase: true,
 	}
 }
