@@ -2,8 +2,8 @@ const { resolve }            = require('path')
 const MiniCssExtractPlugin   = require('mini-css-extract-plugin')
 const SVGSpritemapPlugin     = require('svg-spritemap-webpack-plugin')
 
-let mode = process.env.NODE_ENV || 'development'
-let target = mode === 'development' ? 'web' : 'browserslist'
+const mode = process.env.NODE_ENV || 'development'
+const target = mode === 'development' ? 'web' : 'browserslist'
 
 module.exports = {
 	mode: mode,
