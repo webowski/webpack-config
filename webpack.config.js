@@ -16,7 +16,7 @@ module.exports = {
 	},
 
 	output: {
-		path: __dirname,
+		path: resolve(__dirname),
 		filename: 'scripts/[name].min.js',
 		assetModuleFilename: 'images/[hash][ext][query]',
 		// chunkFilename: '[id].[chunkhash].js',
