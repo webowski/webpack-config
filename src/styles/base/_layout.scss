@@ -27,9 +27,17 @@ main {
 .Section {
 	padding-top: 3rem;
 	padding-bottom: 3rem;
+	background-image: url('../images/bg.jpg');
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
 .container {
 	padding-left: 2rem;
 	padding-right: 2rem;
+}
+
+img {
+	border: 1px solid white;
 }

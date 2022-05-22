@@ -1,5 +1,6 @@
-import { resolve } from 'path'
+import path, { resolve }    from 'path'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import FileManagerPlugin    from 'filemanager-webpack-plugin'
 
 let mode = 'development'
 let target = 'web'
@@ -31,7 +32,12 @@ export default {
 			{
 				test: /\.(scss|css)$/i,
 				use: [
-					MiniCssExtractPlugin.loader,
+					{
+						loader: MiniCssExtractPlugin.loader,
+						options: {
+							publicPath: '../'
+						}
+					},
 					'css-loader',
 					{
 						loader: 'postcss-loader',
@@ -45,6 +51,38 @@ export default {
 					},
 					'sass-loader'
 				]
+			},
+
+			// Images
+			{
+				test: /\.(png|jpe?g|gif|svg)$/i,
+				type: 'asset/resource',
+				generator: {
+					// publicPath: (pathData) => {
+					// 	// // let assetPath = pathData.module.resourceResolveData.relativePath
+					// 	// let assetPath = pathData.filename
+					// 	// // let dirName = path.dirname(assetPath).replace('./src/', '')
+					// 	// let dirName = path.dirname(assetPath).replace('src/', '')
+					// 	// // return dirName
+
+					// 	// let assetPath = pathData.module.resourceResolveData.relativePath
+					// 	// let dirName = path.dirname(assetPath).replace('./src/', '')
+					// 	// return dirName + '/[name][ext]'
+					// 	return 'publicPath'
+					// },
+					// outputPath: (pathData) => {
+					// 	// let assetPath = pathData.module.resourceResolveData.relativePath
+					// 	// let assetPath = pathData.filename
+					// 	// let dirName = path.dirname(assetPath).replace('./src/', '')
+					// 	// let dirName = path.dirname(assetPath).replace('src/', '')
+					// 	return 'dist'
+					// },
+					filename: (pathData) => {
+						let relativePath = pathData.module.resourceResolveData.relativePath
+						let dirName = path.dirname(relativePath).replace('./src/', '')
+						return dirName + '/[name][ext]'
+					},
+				}
 			},
 
 			// Scripts
@@ -71,6 +109,22 @@ export default {
 			filename: 'styles/styles.min.css',
 		}),
 
+		new FileManagerPlugin({
+			events: {
+				onEnd: {
+					copy: [
+            {
+							source: resolve('src/media/*'),
+							destination: resolve('dist/media/')
+						},
+          ],
+					// delete: [
+					// 	resolve(__dirname + '/dist/styles/styles.min.js*')
+					// ]
+				}
+			}
+		})
+
 	],
 
 	devtool: 'source-map',
@@ -79,17 +133,6 @@ export default {
 		static: {
 			directory: resolve('dist')
 		},
-		// devMiddleware: {
-		// 	writeToDisk : true
-		// }
-	},
-
-	// optimization: {
-	// 	// minimize: false,
-	// 	// runtimeChunk: 'single',
-	// 	runtimeChunk: {
-	// 		name: 'runtime',
-	// 	},
-	// },
+	}
 
 }
