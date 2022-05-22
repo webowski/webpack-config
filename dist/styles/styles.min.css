@@ -1,0 +1,51 @@
+/*!**************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[0].use[2]!./node_modules/sass-loader/dist/cjs.js!./src/styles/index.scss ***!
+  \**************************************************************************************************************************************************************************************/
+:root {
+  --text: whitesmoke;
+}
+
+body {
+  margin: 0;
+  background-color: crimson;
+  color: whitesmoke;
+  color: var(--text);
+  font-family: "Ubuntu", sans-serif;
+}
+
+h1:first-child {
+  margin-top: 0;
+}
+
+h1:last-child {
+  margin-bottom: 0;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+main {
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+
+.Section {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.container {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/*# sourceMappingURL=styles.min.css.map*/

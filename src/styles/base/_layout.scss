@@ -1,0 +1,35 @@
+body {
+	margin: 0;
+	background-color: $bg;
+	color: var(--text);
+	font-family: 'Ubuntu', sans-serif;
+}
+
+h1:first-child {
+	margin-top: 0;
+}
+
+h1:last-child {
+	margin-bottom: 0;
+}
+
+h1 {
+	font-size: 3rem;
+}
+
+main {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.Section {
+	padding-top: 3rem;
+	padding-bottom: 3rem;
+}
+
+.container {
+	padding-left: 2rem;
+	padding-right: 2rem;
+}
