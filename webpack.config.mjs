@@ -4,6 +4,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import HtmlWebpackPlugin    from 'html-webpack-plugin'
 import HtmlWebpackHarddiskPlugin from 'html-webpack-harddisk-plugin'
 import FileManagerPlugin    from 'filemanager-webpack-plugin'
+import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
 
 let mode = 'development'
 let target = 'web'
@@ -133,6 +134,22 @@ export default {
 		...makeTemplatesPlugins()
 
 	],
+
+	optimization: {
+    minimizer: [
+      // Extend default minimizer, i.e. `terser-webpack-plugin` for JS
+      '...',
+      // We recommend using only for the 'production' mode
+      new ImageMinimizerPlugin({
+        minimizer: {
+          implementation: ImageMinimizerPlugin.squooshMinify,
+          options: {
+            // Your options for `squoosh`
+          },
+        },
+      })
+    ]
+  },
 
 	resolve: {
 		// extensions: ['.js', '.jsx'],
