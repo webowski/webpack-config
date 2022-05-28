@@ -2,6 +2,7 @@ import fs                   from 'fs-extra'
 import path, { resolve }    from 'path'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import HtmlWebpackPlugin    from 'html-webpack-plugin'
+import HtmlWebpackHarddiskPlugin from 'html-webpack-harddisk-plugin'
 import FileManagerPlugin    from 'filemanager-webpack-plugin'
 
 let mode = 'development'
@@ -131,7 +132,7 @@ export default {
 			runOnceInWatchMode: true
 		}),
 
-		...makeTemplatesPlugins(),
+		...makeTemplatesPlugins()
 
 	],
 
@@ -178,10 +179,15 @@ function makeTemplatesPlugins() {
 				templateParameters: JSON.parse(
 					fs.readFileSync(resolve('src/templates/base/data.json'))
 				),
-				cache: false
+				cache: true,
+				alwaysWriteToDisk: true
 			})
 		)
 	})
+
+	templatesPlugins.push(
+		new HtmlWebpackHarddiskPlugin,
+	)
 
 	return templatesPlugins
 }
