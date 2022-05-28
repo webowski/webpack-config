@@ -1,9 +1,12 @@
+import fs                   from 'fs-extra'
 import path, { resolve }    from 'path'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import HtmlWebpackPlugin    from 'html-webpack-plugin'
 import FileManagerPlugin    from 'filemanager-webpack-plugin'
 
 let mode = 'development'
 let target = 'web'
+let isServer = process.env.WEBPACK_DEV_SERVER;
 
 if (process.env.NODE_ENV === 'production') {
 	mode = 'production'
@@ -59,23 +62,8 @@ export default {
 				type: 'asset/resource',
 				generator: {
 					// publicPath: (pathData) => {
-					// 	// // let assetPath = pathData.module.resourceResolveData.relativePath
-					// 	// let assetPath = pathData.filename
-					// 	// // let dirName = path.dirname(assetPath).replace('./src/', '')
-					// 	// let dirName = path.dirname(assetPath).replace('src/', '')
-					// 	// // return dirName
-
-					// 	// let assetPath = pathData.module.resourceResolveData.relativePath
-					// 	// let dirName = path.dirname(assetPath).replace('./src/', '')
-					// 	// return dirName + '/[name][ext]'
-					// 	return 'publicPath'
 					// },
 					// outputPath: (pathData) => {
-					// 	// let assetPath = pathData.module.resourceResolveData.relativePath
-					// 	// let assetPath = pathData.filename
-					// 	// let dirName = path.dirname(assetPath).replace('./src/', '')
-					// 	// let dirName = path.dirname(assetPath).replace('src/', '')
-					// 	return 'dist'
 					// },
 					filename: (pathData) => {
 						let relativePath = pathData.module.resourceResolveData.relativePath
@@ -100,6 +88,25 @@ export default {
 				}
 			},
 
+			// Templates
+			{
+				test: /\.hbs$/,
+				use: [{
+					loader: 'handlebars-loader',
+					options: {
+						helperDirs: [
+							resolve('src/templates/base/helpers'),
+						],
+						partialDirs: [
+							resolve('src/templates/layouts'),
+							resolve('src/templates/partials'),
+							resolve('src/templates/components'),
+						],
+						// debug: true,
+					}
+				}]
+			},
+
 		]
 	},
 
@@ -112,27 +119,69 @@ export default {
 		new FileManagerPlugin({
 			events: {
 				onEnd: {
-					copy: [
-            {
-							source: resolve('src/media/*'),
-							destination: resolve('dist/media/')
-						},
-          ],
+					// copy: [{
+					// 	source: resolve('src/media/*'),
+					// 	destination: resolve('dist/media/')
+					// }],
 					// delete: [
 					// 	resolve(__dirname + '/dist/styles/styles.min.js*')
 					// ]
 				}
-			}
-		})
+			},
+			runOnceInWatchMode: true
+		}),
+
+		...makeTemplatesPlugins(),
 
 	],
 
+	resolve: {
+		// extensions: ['.js', '.jsx'],
+		alias: {
+			handlebars: 'handlebars/dist/handlebars.js',
+		}
+	},
+
 	devtool: 'source-map',
+
+	stats: {
+		children: true
+	},
+
 	devServer: {
 		hot: true,
+		port: 3000,
 		static: {
 			directory: resolve('dist')
 		},
 	}
 
+}
+
+function makeTemplatesPlugins() {
+
+	const templates = fs
+		.readdirSync(resolve('src/templates/'))
+		.filter(filename => {
+			return filename.match(/\.hbs/)
+		})
+
+	let templatesPlugins = []
+
+	templates.forEach(templateName => {
+		templatesPlugins.push(
+			new HtmlWebpackPlugin({
+				template: 'src/templates/' + templateName,
+				filename: templateName.replace('.hbs', '.html'),
+				minify: false,
+				inject: false,
+				templateParameters: JSON.parse(
+					fs.readFileSync(resolve('src/templates/base/data.json'))
+				),
+				cache: false
+			})
+		)
+	})
+
+	return templatesPlugins
 }

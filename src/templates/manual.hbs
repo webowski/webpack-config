@@ -1,0 +1,229 @@
+{{#> layout-manual title="Webza manual"}}
+
+	<div class="Section container">
+
+		<p class="fz-xl lh-130">The blank for a quick start of the web project.</p>
+
+		<h2 id="build">Build</h2>
+
+		<ul>
+			<li>Install all dependencies by run <code>npm i</code>.</li>
+			<li>Run <code>gulp</code> to build styles, icons, templates and scripts.</li>
+			<li>Run <code>gulp dev</code> to start the development server (е.g. <code>http://localost:3000</code>) and automatically rebuild files when they are changing.</li>
+		</ul>
+
+		<h2 id="build-add-files">Add files</h2>
+
+		<h3>Adding a stylesheet</h3>
+
+		<h5>As separate SCSS or CSS</code></h5>
+
+		<p>Add the path to a stylesheet in <code>build/config.js</code> in <code>styles.separate</code> section</p>
+
+		<pre><code class="scss">styles: {
+	separate: [
+		'path/to/a.scss',
+		'path/to/a.css',
+	]
+}</code></pre>
+
+		<h5>As common SCSS</code></h5>
+
+		<p>Add the path to a stylesheet in <code>styles/common.scss</code></p>
+
+		<h5>As common CSS</h5>
+
+		<p>Add the path to a stylesheet in <code>build/config.js</code> in <code>styles.common</code> section</p>
+
+		<pre><code class="scss">styles: {
+	common: [
+		'path/to/a.css',
+	]
+}</code></pre>
+
+		<!-- <pre><code class="html">&lt;link rel="stylesheet" href="path/to.css" media="nope!" onload="this.media='all'"&gt;</code></pre> -->
+
+		<h3>Adding a script</h3>
+
+		<h5>As separate ESM or UMD</h5>
+
+		<p>Add the script path in <code>build/config.js</code> in <code>styles.separate.esm</code> or <code>styles.separate.umd</code> section</p>
+
+		<pre><code class="javascript">scripts: {
+	separate: {
+		esm: [
+			'path/to/a.esm.js',
+		],
+		umd: [
+			'path/to/a.umd.js',
+		]
+	}
+}</code></pre>
+
+		<h5>As common ESM</h5>
+
+		<p>Import the script in <code>scripts/common.js</code></p>
+
+		<pre><code class="javascript">import './components/esm.js'</code></pre>
+
+		<!-- <pre><code>&lt;script defer="defer" src="path/to.js"&gt;&lt;/script&gt;</code></pre> -->
+
+		<h5>As common UMD</h5>
+
+		<pre><code class="javascript">scripts: {
+	common: {
+		umd: [
+			'path/to/a.umd.js',
+		]
+	}
+}</code></pre>
+
+		<!-- <pre><code>&lt;script defer="defer" src="path/to.js"&gt;&lt;/script&gt;</code></pre> -->
+
+		<h3>Adding an icon</h3>
+
+		<ul>
+			<li>Put the SVG file in folder <code>images/icons</code></li>
+			<li>Run <code>gulp icons</code></li>
+			<li>Copy the svg snippet from <code>images/icons.html</code>
+				<pre><code class="html">&lt;svg&gt;
+	&lt;use xlink:href="#icon"&gt;&lt;/use&gt;
+&lt;/svg&gt;</code></pre>
+
+			</li>
+		</ul>
+
+		<h2 id="naming">CSS naming</h2>
+
+		<p><a href="//webowski.github.io/ubem/" target="_blank">UBEM</a></p>
+
+		<h2 id="components">Components</h2>
+
+		<h3>Pictures</h3>
+
+		<h4>Retina display support</h4>
+
+		<p>Add `@2x` right before the file extension.</p>
+
+		{{picture src="/media/picture@2x.png" class="Illustration" alt="Some picture alt"}}
+
+		{{icon "search" class="Icon fill-brand"}}
+
+		{{> components/grid}}
+
+		<h3 id="components-animation">Animation</h3>
+
+		<h4>Pure CSS</h4>
+
+		<div class="Illustration do-animation appear-fade-in">
+			{{picture src="/media/picture@2x.png" class="Illustration__image parallax" data-depth="0.50" alt="Some picture alt"}}
+		</div>
+
+		<h4>GSAP</h4>
+
+		<div class="Illustration do-animation appear-fade-in">
+			{{picture src="/media/picture@2x.png" class="Illustration__image parallax" data-depth="0.50" alt="Some picture alt"}}
+		</div>
+
+		<h3 id="components-slider">Slider</h3>
+
+		<div class="Slider overflow-hidden"
+			data-loop="true"
+			data-speed="200"
+			>
+			<div class="swiper-container">
+				<div class="swiper-wrapper">
+
+					<div class="swiper-slide">
+						1
+					</div>
+
+					<div class="swiper-slide">
+						2
+					</div>
+
+					<div class="swiper-slide">
+						3
+					</div>
+
+					<div class="swiper-slide">
+						4
+					</div>
+
+				</div>
+			</div>
+			<div class="swiper-button-prev">
+				<
+			</div>
+			<div class="swiper-button-next">
+				>
+			</div>
+		</div>
+
+		<h3>Button</h3>
+
+		<h5>Simple button</h5>
+
+		<div class="grid">
+			<div class="row gap-sm align-center">
+				<div class="col-24 md:col-18 lg:col-16">
+
+					<pre><code class="html">&lt;button class="Btn"&gt;Simple button&lt;/button&gt;</code></pre>
+
+				</div>
+				<div class="col">
+
+					<button class="Btn">Simple button</button>
+
+				</div>
+			</div>
+		</div>
+
+
+		<h5>Primary button</h5>
+
+		<div class="grid">
+			<div class="row gap-sm align-center">
+				<div class="col-24 md:col-18 lg:col-16">
+
+					<pre><code class="html">&lt;button class="Btn Btn--primary"&gt;Primary button&lt;/button&gt;</code></pre>
+
+				</div>
+				<div class="col">
+
+					<button class="Btn Btn--primary">Primary button</button>
+
+				</div>
+			</div>
+		</div>
+
+		<h2 id="utilities">Utilities</h2>
+
+		<h3 id="utilities-text">Text</h3>
+
+		<pre><code class="html">&lt;span class="fz-400 fw-800 color-major"&gt;&lt;/span&gt;</code></pre>
+
+		<h3 id="utilities-grid">Responsive grid</h3>
+
+		<pre><code class="html">&lt;div class="row  gap-sm lg:gap-md"&gt;
+	&lt;div class="col-12 md:col-4 lg:col-3"&gt;
+
+	&lt;/div&gt;
+	&lt;div class="col-12 md:col-8 lg:col-9"&gt;
+
+	&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+		<h3 id="utilities-display">Display property</h3>
+
+		<pre><code class="html">&lt;div class="d-block md:d-none"&gt;&lt;/div&gt;
+
+&lt;div class="xsOnly:d-none"&gt;Something not for smallest screens&lt;/div&gt;
+
+&lt;div class="print:d-none"&gt;&lt;/div&gt;
+
+&lt;div class="d-flex  justify-start md:justify-between  align-stretch"&gt;
+	&lt;div class="grow-1 shrink-0"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+{{/layout-manual}}

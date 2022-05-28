@@ -1,1 +1,1 @@
-console.log('Here is slider')
+console.log('Here is the slider')

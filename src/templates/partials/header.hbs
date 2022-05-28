@@ -1,0 +1,24 @@
+<header class="Header">
+	<div class="container">
+
+		<a href="" class="Logo" aria-label="logo">
+			<img src="./images/logo.svg" alt="">
+		</a>
+
+		<nav class="Nav">
+			<ul>
+				{{#each nav}}
+					<li class="Nav__item{{#ifEquals url ../currentUrl }} is-current{{/ifEquals}}">
+						<a href="{{url}}">{{title}}</a>
+					</li>
+				{{/each}}
+			</ul>
+		</nav>
+
+		<button class="Btn d-flex align-center">
+			{{icon "search" class="Icon rect-150 mr-050"}}
+			<span>Search</span>
+		</button>
+
+	</div>
+</header>

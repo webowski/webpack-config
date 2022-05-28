@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="{{lang}}">
+<head>
+	<meta charset="utf-8">
+	<title>{{title}}</title>
+	{{> head-scripts}}
+</head>
+<body class="G-notLogged G-frontpage" style="--scrollY:0px;">
+
+	{{> header}}
+
+	<main class="Main">
+		{{> @partial-block }}
+	</main>
+
+	{{> footer}}
+
+	{{> notifications}}
+
+	{{> footer-scripts}}
+</body>
+</html>

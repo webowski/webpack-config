@@ -1,0 +1,8 @@
+{
+  "lang": "en",
+  "nav": [
+    { "url": "/", "title": "Homepage" },
+    { "url": "/about.html", "title": "About" },
+    { "url": "/contacts.html", "title": "Contacts" }
+  ]
+}
