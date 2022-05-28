@@ -104,6 +104,7 @@ export default {
 							resolve('src/templates/components'),
 						],
 						// debug: true,
+						inlineRequires: '\/media\/' // resources copying
 					}
 				}]
 			},
@@ -123,10 +124,7 @@ export default {
 					// copy: [{
 					// 	source: resolve('src/media/*'),
 					// 	destination: resolve('dist/media/')
-					// }],
-					// delete: [
-					// 	resolve(__dirname + '/dist/styles/styles.min.js*')
-					// ]
+					// }]
 				}
 			},
 			runOnceInWatchMode: true
@@ -146,7 +144,7 @@ export default {
 	devtool: 'source-map',
 
 	stats: {
-		children: true
+		children: false
 	},
 
 	devServer: {

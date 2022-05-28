@@ -5,24 +5,28 @@ body {
 	font-family: 'Ubuntu', sans-serif;
 }
 
-h1:first-child {
-	margin-top: 0;
+h1, p {
+	&:first-child {
+		margin-top: 0;
+	}
 }
 
-h1:last-child {
-	margin-bottom: 0;
+h1, p {
+	&:last-child {
+		margin-bottom: 0;
+	}
 }
 
 h1 {
-	font-size: 4rem;
+	font-size: 3.5rem;
 }
 
-main {
-	min-height: 100vh;
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-}
+// main {
+// 	min-height: 100vh;
+// 	display: flex;
+// 	align-items: center;
+// 	justify-content: flex-start;
+// }
 
 .Section {
 	padding-top: 3rem;
