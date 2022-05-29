@@ -8,7 +8,7 @@ import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
 
 let mode = 'development'
 let target = 'web'
-let isServer = process.env.WEBPACK_DEV_SERVER;
+let isServer = process.env.WEBPACK_DEV_SERVER
 
 if (process.env.NODE_ENV === 'production') {
 	mode = 'production'
@@ -20,10 +20,6 @@ export default {
 	target: target,
 
 	entry: {
-		// styles: {
-		// 	import: resolve('./src/styles/index.scss'),
-		// 	filename: './styles/[name].min.js'
-		// },
 		bundle: {
 			import: resolve('./src/scripts/index.js'),
 			filename: './scripts/[name].min.js'
@@ -63,16 +59,43 @@ export default {
 				test: /\.(png|jpe?g|gif|svg)$/i,
 				type: 'asset/resource',
 				generator: {
-					// publicPath: (pathData) => {
-					// },
-					// outputPath: (pathData) => {
-					// },
+					// publicPath: (pathData) => {},
+					// outputPath: (pathData) => {},
 					filename: (pathData) => {
 						let relativePath = pathData.module.resourceResolveData.relativePath
 						let dirName = path.dirname(relativePath).replace('./src/', '')
 						return dirName + '/[name][ext]'
-					},
+					}
 				}
+			},
+			{
+				test: /\.(png|jpe?g|gif|svg)$/i,
+				type: 'asset/resource',
+				generator: {
+					// publicPath: (pathData) => {},
+					// outputPath: (pathData) => {},
+					filename: (pathData) => {
+						let relativePath = pathData.module.resourceResolveData.relativePath
+						let dirName = path.dirname(relativePath).replace('./src/', '')
+						return dirName + '/[name]@2x[ext]'
+					}
+				},
+				loader: ImageMinimizerPlugin.loader,
+				enforce: 'pre',
+				options: {
+					generator: [{
+						preset: 'webp',
+						type: 'import',
+						implementation: ImageMinimizerPlugin.squooshGenerate,
+						options: {
+							encodeOptions: {
+								webp: {
+									quality: 90,
+								},
+							},
+						},
+					}],
+				},
 			},
 
 			// Scripts
@@ -135,21 +158,43 @@ export default {
 
 	],
 
-	optimization: {
-    minimizer: [
-      // Extend default minimizer, i.e. `terser-webpack-plugin` for JS
-      '...',
-      // We recommend using only for the 'production' mode
-      new ImageMinimizerPlugin({
-        minimizer: {
-          implementation: ImageMinimizerPlugin.squooshMinify,
-          options: {
-            // Your options for `squoosh`
-          },
-        },
-      })
-    ]
-  },
+	// optimization: {
+  //   minimizer: [
+  //     // Extend default minimizer, i.e. `terser-webpack-plugin` for JS
+  //     '...',
+  //     // We recommend using only for the 'production' mode
+  //     new ImageMinimizerPlugin({
+	// 			deleteOriginalAssets: false,
+  //       minimizer: {
+  //         implementation: ImageMinimizerPlugin.squooshMinify,
+  //         options: {
+  //           // Your options for `squoosh`
+  //         }
+  //       }
+	// 		}),
+	// 		new ImageMinimizerPlugin({
+	// 			deleteOriginalAssets: false,
+	// 			generator: [{
+	// 				// type: 'asset',
+	// 				preset: 'webp',
+	// 				// implementation: (original, options) => {
+	// 				// 	console.log('original', original)
+	// 				// 	console.log('options', options)
+	// 				// 	// return {}
+	// 				// },
+	// 				filename: '[name][ext]',
+	// 				implementation: ImageMinimizerPlugin.squooshGenerate,
+	// 				options: {
+	// 					encodeOptions: {
+	// 						webp: {
+	// 							quality: 90
+	// 						}
+	// 					}
+	// 				}
+	// 			}]
+  //     }),
+  //   ]
+  // },
 
 	resolve: {
 		// extensions: ['.js', '.jsx'],
@@ -161,7 +206,7 @@ export default {
 	devtool: 'source-map',
 
 	stats: {
-		children: false
+		children: true
 	},
 
 	devServer: {
@@ -201,7 +246,7 @@ function makeTemplatesPlugins() {
 	})
 
 	templatesPlugins.push(
-		new HtmlWebpackHarddiskPlugin,
+		new HtmlWebpackHarddiskPlugin
 	)
 
 	return templatesPlugins
