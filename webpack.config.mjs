@@ -144,22 +144,71 @@ export default {
       '...',
 
       // We recommend using only for the 'production' mode
-      new ImageMinimizerPlugin({
-				deleteOriginalAssets: false,
-        minimizer: {
-          implementation: ImageMinimizerPlugin.squooshMinify,
-          options: {
-            // Your options for `squoosh`
-          }
-        }
-			}),
+      // new ImageMinimizerPlugin({
+			// 	deleteOriginalAssets: false,
+      //   minimizer: {
+      //     implementation: ImageMinimizerPlugin.squooshMinify,
+      //     options: {
+      //       // Your options for `squoosh`
+      //     }
+      //   }
+			// }),
 
 			new ImageMinimizerPlugin({
 				deleteOriginalAssets: false,
+				minimizer: {
+          implementation: ImageMinimizerPlugin.squooshMinify,
+          options: {
+						encodeOptions: {
+							mozjpeg: {
+								quality: 85
+							}
+						}
+          }
+        },
 				generator: [
 
 					{
-						preset: 'webp',
+						preset: 'sm',
+						filename: '[name]@sm[ext]',
+						implementation: ImageMinimizerPlugin.squooshMinify,
+						options: {
+							encodeOptions: {
+								mozjpeg: {
+									quality: 85
+								}
+							}
+						}
+					},
+
+					{
+						preset: '1x',
+						filename: '[name][ext]',
+						implementation: ImageMinimizerPlugin.squooshMinify,
+						options: {
+							encodeOptions: {
+								mozjpeg: {
+									quality: 85
+								}
+							}
+						}
+					},
+
+					{
+						preset: 'webpSm',
+						filename: '[name]@sm[ext]',
+						implementation: ImageMinimizerPlugin.squooshGenerate,
+						options: {
+							encodeOptions: {
+								webp: {
+									quality: 85
+								}
+							}
+						}
+					},
+
+					{
+						preset: 'webp1x',
 						filename: '[name][ext]',
 						implementation: ImageMinimizerPlugin.squooshGenerate,
 						options: {
@@ -182,7 +231,7 @@ export default {
 								}
 							}
 						}
-					}
+					},
 
 				]
       })

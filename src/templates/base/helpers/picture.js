@@ -1,4 +1,7 @@
-const Handlebars = require('handlebars')
+const { resolve } = require('path')
+const Handlebars  = require('handlebars')
+
+const __dir = resolve('src/media')
 
 class PathsGen {
 	initial
@@ -50,17 +53,35 @@ module.exports = function(options) {
 		let attributes = makeAttributesString(options.hash)
 		let paths = new PathsGen(src)
 
-		importImages()
+		let images = importImages(src)
 
 		let output = `<picture ${attributes}>
+			<source media="(max-width: 767px)" srcset="${paths.srcsetWebp}">
 			<source srcset="${paths.srcsetWebp}" type="image/webp">
 			<img src="${paths.initial}" srcset="${paths.srcset}" alt="${altText}">
-		</picture>`
+		</picture>
+		${__dir}`
 
 		return new Handlebars.SafeString(output)
 }
 
-function importImages() {
-	let webp = require('../../../media/hero.jpg?as=webp')
-	let webp2x = require('../../../media/hero.jpg?as=webp2x')
+function importImages(src) {
+	let images = {}
+	let is2x = src.match(/@2x/)
+
+	if (is2x) {
+		// let initialSm = require('../../../media/hero@2x.jpg?as=small')
+		// let initial1x = require('../../../media/hero@2x.jpg?as=1x')
+		// let initial2x = require('../../../media/hero@2x.jpg?as=2x')
+		// let webpSm = require('../../../media/hero.jpg?as=webpSm')
+		// let webp1x = require('../../../media/hero.jpg?as=webp1x')
+		// let webp2x = require('../../../media/hero.jpg?as=webp2x')
+	} else {
+		images.initialSm = require('../../../media/hero.jpg?as=sm')
+		// images.initial1x = require('../../../media/hero.jpg?as=1x')
+		images.webpSm = require('../../../media/hero.jpg?as=webpSm')
+		images.webp1x = require('../../../media/hero.jpg?as=webp1x')
+	}
+
+	return images
 }
