@@ -5,7 +5,6 @@ import HtmlWebpackPlugin    from 'html-webpack-plugin'
 import HtmlWebpackHarddiskPlugin from 'html-webpack-harddisk-plugin'
 import FileManagerPlugin    from 'filemanager-webpack-plugin'
 import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
-import CopyPlugin           from 'copy-webpack-plugin'
 
 let mode = 'development'
 let target = 'web'
