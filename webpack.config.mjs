@@ -68,35 +68,16 @@ export default {
 						return dirName + '/[name][ext]'
 					}
 				}
-			},
-			{
-				test: /\.(png|jpe?g|gif|svg)$/i,
+			}, {
+				test: /\.(webp)$/i,
 				type: 'asset/resource',
 				generator: {
-					// publicPath: (pathData) => {},
-					// outputPath: (pathData) => {},
 					filename: (pathData) => {
 						let relativePath = pathData.module.resourceResolveData.relativePath
 						let dirName = path.dirname(relativePath).replace('./src/', '')
-						return dirName + '/[name]@2x[ext]'
+						return dirName + '/[name][ext]'
 					}
-				},
-				loader: ImageMinimizerPlugin.loader,
-				enforce: 'pre',
-				options: {
-					generator: [{
-						preset: 'webp',
-						type: 'import',
-						implementation: ImageMinimizerPlugin.squooshGenerate,
-						options: {
-							encodeOptions: {
-								webp: {
-									quality: 90,
-								},
-							},
-						},
-					}],
-				},
+				}
 			},
 
 			// Scripts
@@ -159,43 +140,55 @@ export default {
 
 	],
 
-	// optimization: {
-  //   minimizer: [
-  //     // Extend default minimizer, i.e. `terser-webpack-plugin` for JS
-  //     '...',
-  //     // We recommend using only for the 'production' mode
-  //     new ImageMinimizerPlugin({
-	// 			deleteOriginalAssets: false,
-  //       minimizer: {
-  //         implementation: ImageMinimizerPlugin.squooshMinify,
-  //         options: {
-  //           // Your options for `squoosh`
-  //         }
-  //       }
-	// 		}),
-	// 		new ImageMinimizerPlugin({
-	// 			deleteOriginalAssets: false,
-	// 			generator: [{
-	// 				// type: 'asset',
-	// 				preset: 'webp',
-	// 				// implementation: (original, options) => {
-	// 				// 	console.log('original', original)
-	// 				// 	console.log('options', options)
-	// 				// 	// return {}
-	// 				// },
-	// 				filename: '[name][ext]',
-	// 				implementation: ImageMinimizerPlugin.squooshGenerate,
-	// 				options: {
-	// 					encodeOptions: {
-	// 						webp: {
-	// 							quality: 90
-	// 						}
-	// 					}
-	// 				}
-	// 			}]
-  //     }),
-  //   ]
-  // },
+	optimization: {
+    minimizer: [
+      '...',
+
+      // We recommend using only for the 'production' mode
+      new ImageMinimizerPlugin({
+				deleteOriginalAssets: false,
+        minimizer: {
+          implementation: ImageMinimizerPlugin.squooshMinify,
+          options: {
+            // Your options for `squoosh`
+          }
+        }
+			}),
+
+			new ImageMinimizerPlugin({
+				deleteOriginalAssets: false,
+				generator: [
+
+					{
+						preset: 'webp',
+						filename: '[name][ext]',
+						implementation: ImageMinimizerPlugin.squooshGenerate,
+						options: {
+							encodeOptions: {
+								webp: {
+									quality: 85
+								}
+							}
+						}
+					},
+
+					{
+						preset: 'webp2x',
+						filename: '[name]@2x[ext]',
+						implementation: ImageMinimizerPlugin.squooshGenerate,
+						options: {
+							encodeOptions: {
+								webp: {
+									quality: 85
+								}
+							}
+						}
+					}
+
+				]
+      })
+    ]
+  },
 
 	resolve: {
 		// extensions: ['.js', '.jsx'],
@@ -207,7 +200,7 @@ export default {
 	devtool: 'source-map',
 
 	stats: {
-		children: true
+		children: false
 	},
 
 	devServer: {

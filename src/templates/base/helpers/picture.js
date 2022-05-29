@@ -50,10 +50,17 @@ module.exports = function(options) {
 		let attributes = makeAttributesString(options.hash)
 		let paths = new PathsGen(src)
 
+		importImages()
+
 		let output = `<picture ${attributes}>
 			<source srcset="${paths.srcsetWebp}" type="image/webp">
 			<img src="${paths.initial}" srcset="${paths.srcset}" alt="${altText}">
 		</picture>`
 
 		return new Handlebars.SafeString(output)
+}
+
+function importImages() {
+	let webp = require('../../../media/hero.jpg?as=webp')
+	let webp2x = require('../../../media/hero.jpg?as=webp2x')
 }

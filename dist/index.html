@@ -74,14 +74,21 @@
 	<main class="Main">
 		
 			<div class="Hero">
-				<img src="media/hero@2x.webp" alt="">
-				<img src="media/articles/item@2x.jpg" alt="">
+				<picture class="Hero__image">
+						<source srcset="media/hero.webp" type="image/webp">
+						<img src="media/hero.jpg" srcset="media/hero.jpg" alt="Hero image alt">
+					</picture>
 			</div>
 		
 			<div class="Section">
 				<div class="container">
 		
 					<h1>Front page</h1>
+		
+					<picture >
+					<source srcset="media/articles/item.webp, media/articles/item@2x.webp 2x" type="image/webp">
+					<img src="media/articles/item.jpg" srcset="media/articles/item.jpg, media/articles/item@2x.jpg 2x" alt="">
+				</picture>
 		
 				</div>
 			</div>
