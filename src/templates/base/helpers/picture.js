@@ -53,7 +53,8 @@ module.exports = function(options) {
 		let attributes = makeAttributesString(options.hash)
 		let paths = new PathsGen(src)
 
-		let images = importImages(src)
+		let images = getImages(src)
+		// let images = require('../../../media/hero.jpg?as=webp1x')
 
 		let output = `<picture ${attributes}>
 			<source media="(max-width: 767px)" srcset="${paths.srcsetWebp}">
@@ -65,23 +66,31 @@ module.exports = function(options) {
 		return new Handlebars.SafeString(output)
 }
 
-function importImages(src) {
+async function getImages(src) {
 	let images = {}
 	let is2x = src.match(/@2x/)
+	let paths = {}
 
 	if (is2x) {
-		// let initialSm = require('../../../media/hero@2x.jpg?as=small')
-		// let initial1x = require('../../../media/hero@2x.jpg?as=1x')
-		// let initial2x = require('../../../media/hero@2x.jpg?as=2x')
-		// let webpSm = require('../../../media/hero.jpg?as=webpSm')
-		// let webp1x = require('../../../media/hero.jpg?as=webp1x')
-		// let webp2x = require('../../../media/hero.jpg?as=webp2x')
+		paths.initialSm = '../../../media/hero@2x.jpg?as=small'
+		paths.initial1x = '../../../media/hero@2x.jpg?as=1x'
+		paths.initial2x = '../../../media/hero@2x.jpg?as=2x'
+		paths.webpSm = '../../../media/hero.jpg?as=webpSm'
+		paths.webp1x = '../../../media/hero.jpg?as=webp1x'
+		paths.webp2x = '../../../media/hero.jpg?as=webp2x'
 	} else {
-		images.initialSm = require('../../../media/hero.jpg?as=sm')
-		// images.initial1x = require('../../../media/hero.jpg?as=1x')
-		images.webpSm = require('../../../media/hero.jpg?as=webpSm')
-		images.webp1x = require('../../../media/hero.jpg?as=webp1x')
+		paths.initialSm = '../../../media/hero.jpg?as=sm'
+		paths.initial1x = '../../../media/hero.jpg?as=1x'
+		paths.webpSm = '../../../media/hero.jpg?as=webpSm'
+		paths.webp1x = '../../../media/hero.jpg?as=webp1x'
 	}
+
+	for (let format in paths) {
+		images[format] = require(paths[format])
+	}
+
+	// paths.webp1x = require('../../../media/hero.jpg?as=webp1x')
+	// paths.initial2x = require('../../../media/articles/item.jpg?as=1x')
 
 	return images
 }
