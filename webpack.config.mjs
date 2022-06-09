@@ -56,7 +56,7 @@ export default {
 
 			// Images
 			{
-				test: /\.(png|jpe?g|gif|svg)$/i,
+				test: /\.(png|jpe?g|gif|webp|svg)$/i,
 				type: 'asset/resource',
 				generator: {
 					// publicPath: (pathData) => {},
@@ -64,19 +64,9 @@ export default {
 					filename: (pathData) => {
 						let relativePath = pathData.module.resourceResolveData.relativePath
 						let dirName = path.dirname(relativePath).replace('./src/', '')
-						return dirName + '/[name][ext]'
-					}
-				}
-			}, {
-				test: /\.(webp)$/i,
-				type: 'asset/resource',
-				generator: {
-					filename: (pathData) => {
-						let relativePath = pathData.module.resourceResolveData.relativePath
-						let dirName = path.dirname(relativePath).replace('./src/', '')
-						return dirName + '/[name][ext]'
-					}
-				}
+						return dirName + '/[name]-[hash:4][ext]'
+					},
+				},
 			},
 
 			// Scripts
@@ -142,17 +132,6 @@ export default {
 	optimization: {
     minimizer: [
       '...',
-
-      // We recommend using only for the 'production' mode
-      // new ImageMinimizerPlugin({
-			// 	deleteOriginalAssets: false,
-      //   minimizer: {
-      //     implementation: ImageMinimizerPlugin.squooshMinify,
-      //     options: {
-      //       // Your options for `squoosh`
-      //     }
-      //   }
-			// }),
 
 			new ImageMinimizerPlugin({
 				deleteOriginalAssets: false,
@@ -256,7 +235,7 @@ export default {
 		port: 3000,
 		static: {
 			directory: resolve('dist')
-		},
+		}
 	}
 
 }

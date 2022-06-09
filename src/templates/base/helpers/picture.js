@@ -1,5 +1,8 @@
 const { resolve } = require('path')
 const Handlebars  = require('handlebars')
+// const requireImage = require('./requireImage')
+
+const requireFunc = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require
 
 const __dir = resolve('src/media')
 
@@ -53,8 +56,9 @@ module.exports = function(options) {
 		let attributes = makeAttributesString(options.hash)
 		let paths = new PathsGen(src)
 
-		let images = getImages(src)
+		// let images = getImages(src)
 		// let images = require('../../../media/hero.jpg?as=webp1x')
+		// let image = requireImage('../../../media/hero.jpg?format=webp')
 
 		let output = `<picture ${attributes}>
 			<source media="(max-width: 767px)" srcset="${paths.srcsetWebp}">
@@ -66,31 +70,30 @@ module.exports = function(options) {
 		return new Handlebars.SafeString(output)
 }
 
-async function getImages(src) {
-	let images = {}
-	let is2x = src.match(/@2x/)
-	let paths = {}
+// async function getImages(src) {
+// 	let images = {}
+// 	let is2x = src.match(/@2x/)
+// 	let paths = {}
 
-	if (is2x) {
-		paths.initialSm = '../../../media/hero@2x.jpg?as=small'
-		paths.initial1x = '../../../media/hero@2x.jpg?as=1x'
-		paths.initial2x = '../../../media/hero@2x.jpg?as=2x'
-		paths.webpSm = '../../../media/hero.jpg?as=webpSm'
-		paths.webp1x = '../../../media/hero.jpg?as=webp1x'
-		paths.webp2x = '../../../media/hero.jpg?as=webp2x'
-	} else {
-		paths.initialSm = '../../../media/hero.jpg?as=sm'
-		paths.initial1x = '../../../media/hero.jpg?as=1x'
-		paths.webpSm = '../../../media/hero.jpg?as=webpSm'
-		paths.webp1x = '../../../media/hero.jpg?as=webp1x'
-	}
+// 	if (is2x) {
+// 		paths.initialSm = '../../../media/hero@2x.jpg?as=small'
+// 		paths.initial1x = '../../../media/hero@2x.jpg?as=1x'
+// 		paths.initial2x = '../../../media/hero@2x.jpg?as=2x'
+// 		paths.webpSm = '../../../media/hero.jpg?as=webpSm'
+// 		paths.webp1x = '../../../media/hero.jpg?as=webp1x'
+// 		paths.webp2x = '../../../media/hero.jpg?as=webp2x'
+// 	} else {
+// 		paths.initialSm = '../../../media/hero.jpg?as=sm'
+// 		paths.initial1x = '../../../media/hero.jpg?as=1x'
+// 		paths.webpSm = '../../../media/hero.jpg?as=webpSm'
+// 		paths.webp1x = '../../../media/hero.jpg?as=webp1x'
+// 	}
 
-	for (let format in paths) {
-		images[format] = require(paths[format])
-	}
+// 	for (let format in paths) {
+// 		// images[format] = requireFunc(`${paths[format]}`)
+// 	}
 
-	// paths.webp1x = require('../../../media/hero.jpg?as=webp1x')
-	// paths.initial2x = require('../../../media/articles/item.jpg?as=1x')
+// 	// images.webp1x = import('../../../media/hero.jpg?as=webp1x')
 
-	return images
-}
+// 	return images
+// }
