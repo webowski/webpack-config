@@ -75,11 +75,16 @@
 		
 			<div class="Hero">
 				<picture class="Hero__image">
-						<source media="(max-width: 767px)" srcset="media/hero-0df3.webp">
-						<source srcset="media/hero-0df3.webp" type="image/webp">
-						<img src="media/hero-0df3.jpg" srcset="media/hero-0df3.jpg" alt="Hero image alt">
+						<source media="(max-width: 767px)" srcset="media/hero.webp">
+						<source srcset="media/hero.webp" type="image/webp">
+						<img src="media/hero.jpg" srcset="media/hero.jpg" alt="Hero image alt">
 					</picture>
-					/mnt/storage/repos/webpack-config/src/media
+					<!--/mnt/storage/repos/webpack-config/src-->
+					<!--
+			import(/* webpackMode: "eager" */ '../../../media/hero.jpg?as=webp1x?as=1x'); 
+			import(/* webpackMode: "eager" */ '../../../media/hero.jpg?as=webp1x?as=sm'); 
+			import(/* webpackMode: "eager" */ '../../../media/hero.jpg?as=webp1x?as=webp1x'); 
+			import(/* webpackMode: "eager" */ '../../../media/hero.jpg?as=webp1x?as=webpSm');-->
 			</div>
 		
 			<div class="Section">

@@ -64,7 +64,7 @@ export default {
 					filename: (pathData) => {
 						let relativePath = pathData.module.resourceResolveData.relativePath
 						let dirName = path.dirname(relativePath).replace('./src/', '')
-						return dirName + '/[name]-[hash:4][ext]'
+						return dirName + '/[name][ext]'
 					},
 				},
 			},
@@ -85,6 +85,14 @@ export default {
 			},
 
 			// Templates
+			{
+				test: /\.html$/,
+				use: [
+					{
+						loader: 'html-loader-srcset'
+					}
+				]
+			},
 			{
 				test: /\.hbs$/,
 				use: [{
@@ -134,6 +142,7 @@ export default {
       '...',
 
 			new ImageMinimizerPlugin({
+				// include: resolve('media'),
 				deleteOriginalAssets: false,
 				minimizer: {
           implementation: ImageMinimizerPlugin.squooshMinify,

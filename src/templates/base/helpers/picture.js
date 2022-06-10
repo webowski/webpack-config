@@ -1,10 +1,7 @@
 const { resolve } = require('path')
+const path = require('path')
 const Handlebars  = require('handlebars')
-// const requireImage = require('./requireImage')
-
-const requireFunc = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require
-
-const __dir = resolve('src/media')
+var loaderUtils = require("loader-utils")
 
 class PathsGen {
 	initial
@@ -57,15 +54,34 @@ module.exports = function(options) {
 		let paths = new PathsGen(src)
 
 		// let images = getImages(src)
-		// let images = require('../../../media/hero.jpg?as=webp1x')
-		// let image = requireImage('../../../media/hero.jpg?format=webp')
+		let imageSrc = '../../../media/hero.jpg?as=webp1x'
+		let __dir = resolve('src')
+		// let imageSrc = resolve(__dir, 'media/hero.jpg')
+
+		let imports = []
+		let presets = ['1x', 'sm', 'webp1x', 'webpSm']
+
+		if (1 == 1) {
+			// import(/* webpackMode: "eager" */ '../../../media/hero.jpg?as=webp1x').then((module) => {})
+
+			presets.forEach(preset => {
+				imports.push(
+					`\nimport(/* webpackMode: "eager" */ '${imageSrc}?as=${preset}');`
+				)
+			})
+		}
+
+		// let hbsImage = new Handlebars.compile('<img src="' + imageSrc + '" alt="">')({})
+
+		imports = imports.join(' ')
 
 		let output = `<picture ${attributes}>
 			<source media="(max-width: 767px)" srcset="${paths.srcsetWebp}">
 			<source srcset="${paths.srcsetWebp}" type="image/webp">
 			<img src="${paths.initial}" srcset="${paths.srcset}" alt="${altText}">
 		</picture>
-		${__dir}`
+		<!--${__dir}-->
+		<!--${imports}-->`
 
 		return new Handlebars.SafeString(output)
 }
@@ -76,7 +92,7 @@ module.exports = function(options) {
 // 	let paths = {}
 
 // 	if (is2x) {
-// 		paths.initialSm = '../../../media/hero@2x.jpg?as=small'
+// 		paths.initialSm = '../../../media/hero@2x.jpg?as=sm'
 // 		paths.initial1x = '../../../media/hero@2x.jpg?as=1x'
 // 		paths.initial2x = '../../../media/hero@2x.jpg?as=2x'
 // 		paths.webpSm = '../../../media/hero.jpg?as=webpSm'
@@ -92,8 +108,6 @@ module.exports = function(options) {
 // 	for (let format in paths) {
 // 		// images[format] = requireFunc(`${paths[format]}`)
 // 	}
-
-// 	// images.webp1x = import('../../../media/hero.jpg?as=webp1x')
 
 // 	return images
 // }
