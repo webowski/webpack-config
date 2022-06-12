@@ -142,25 +142,36 @@ export default {
       '...',
 
 			new ImageMinimizerPlugin({
-				// include: resolve('media'),
 				deleteOriginalAssets: false,
 				minimizer: {
-          implementation: ImageMinimizerPlugin.squooshMinify,
+          implementation: ImageMinimizerPlugin.squooshGenerate,
+					filter: (source, sourcePath) => {
+						console.log(sourcePath)
+						return true
+					},
           options: {
+						resize: {
+							enabled: true,
+							width: 1980,
+						},
 						encodeOptions: {
 							mozjpeg: {
 								quality: 85
-							}
+							},
 						}
           }
         },
 				generator: [
 
 					{
-						preset: 'sm',
-						filename: '[name]@sm[ext]',
-						implementation: ImageMinimizerPlugin.squooshMinify,
+						preset: '768',
+						filename: '[name]@768[ext]',
+						implementation: ImageMinimizerPlugin.squooshGenerate,
 						options: {
+							resize: {
+								enabled: true,
+								width: 768,
+							},
 							encodeOptions: {
 								mozjpeg: {
 									quality: 85
@@ -170,10 +181,14 @@ export default {
 					},
 
 					{
-						preset: '1x',
+						preset: '1280',
 						filename: '[name][ext]',
 						implementation: ImageMinimizerPlugin.squooshMinify,
 						options: {
+							resize: {
+								enabled: true,
+								width: 1280,
+							},
 							encodeOptions: {
 								mozjpeg: {
 									quality: 85
@@ -183,12 +198,16 @@ export default {
 					},
 
 					{
-						preset: 'webpSm',
-						filename: '[name]@sm[ext]',
-						implementation: ImageMinimizerPlugin.squooshGenerate,
+						preset: '1980',
+						filename: '[name]@1980[ext]',
+						implementation: ImageMinimizerPlugin.squooshMinify,
 						options: {
+							resize: {
+								enabled: true,
+								width: 1980,
+							},
 							encodeOptions: {
-								webp: {
+								mozjpeg: {
 									quality: 85
 								}
 							}
@@ -196,10 +215,31 @@ export default {
 					},
 
 					{
-						preset: 'webp1x',
+						preset: 'webp768',
+						filename: '[name]@768[ext]',
+						implementation: ImageMinimizerPlugin.squooshGenerate,
+            options: {
+							resize: {
+								enabled: true,
+								width: 768,
+							},
+              encodeOptions: {
+                webp: {
+                  quality: 85,
+                },
+              },
+            },
+					},
+
+					{
+						preset: 'webp1280',
 						filename: '[name][ext]',
 						implementation: ImageMinimizerPlugin.squooshGenerate,
 						options: {
+							resize: {
+								enabled: true,
+								width: 1280,
+							},
 							encodeOptions: {
 								webp: {
 									quality: 85
@@ -209,10 +249,14 @@ export default {
 					},
 
 					{
-						preset: 'webp2x',
-						filename: '[name]@2x[ext]',
+						preset: 'webp1980',
+						filename: '[name]@1980[ext]',
 						implementation: ImageMinimizerPlugin.squooshGenerate,
 						options: {
+							resize: {
+								enabled: true,
+								width: 1980,
+							},
 							encodeOptions: {
 								webp: {
 									quality: 85
