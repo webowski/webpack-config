@@ -5,6 +5,7 @@ import HtmlWebpackPlugin    from 'html-webpack-plugin'
 import HtmlWebpackHarddiskPlugin from 'html-webpack-harddisk-plugin'
 import FileManagerPlugin    from 'filemanager-webpack-plugin'
 import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
+import measureImage         from 'buffer-image-size'
 
 let mode = 'development'
 let target = 'web'
@@ -65,8 +66,8 @@ export default {
 						let relativePath = pathData.module.resourceResolveData.relativePath
 						let dirName = path.dirname(relativePath).replace('./src/', '')
 						return dirName + '/[name][ext]'
-					},
-				},
+					}
+				}
 			},
 
 			// Scripts
@@ -85,14 +86,6 @@ export default {
 			},
 
 			// Templates
-			{
-				test: /\.html$/,
-				use: [
-					{
-						loader: 'html-loader-srcset'
-					}
-				]
-			},
 			{
 				test: /\.hbs$/,
 				use: [{
@@ -140,133 +133,7 @@ export default {
 	optimization: {
     minimizer: [
       '...',
-
-			new ImageMinimizerPlugin({
-				deleteOriginalAssets: false,
-				minimizer: {
-          implementation: ImageMinimizerPlugin.squooshGenerate,
-					filter: (source, sourcePath) => {
-						console.log(sourcePath)
-						return true
-					},
-          options: {
-						resize: {
-							enabled: true,
-							width: 1980,
-						},
-						encodeOptions: {
-							mozjpeg: {
-								quality: 85
-							},
-						}
-          }
-        },
-				generator: [
-
-					{
-						preset: '768',
-						filename: '[name]@768[ext]',
-						implementation: ImageMinimizerPlugin.squooshGenerate,
-						options: {
-							resize: {
-								enabled: true,
-								width: 768,
-							},
-							encodeOptions: {
-								mozjpeg: {
-									quality: 85
-								}
-							}
-						}
-					},
-
-					{
-						preset: '1280',
-						filename: '[name][ext]',
-						implementation: ImageMinimizerPlugin.squooshMinify,
-						options: {
-							resize: {
-								enabled: true,
-								width: 1280,
-							},
-							encodeOptions: {
-								mozjpeg: {
-									quality: 85
-								}
-							}
-						}
-					},
-
-					{
-						preset: '1980',
-						filename: '[name]@1980[ext]',
-						implementation: ImageMinimizerPlugin.squooshMinify,
-						options: {
-							resize: {
-								enabled: true,
-								width: 1980,
-							},
-							encodeOptions: {
-								mozjpeg: {
-									quality: 85
-								}
-							}
-						}
-					},
-
-					{
-						preset: 'webp768',
-						filename: '[name]@768[ext]',
-						implementation: ImageMinimizerPlugin.squooshGenerate,
-            options: {
-							resize: {
-								enabled: true,
-								width: 768,
-							},
-              encodeOptions: {
-                webp: {
-                  quality: 85,
-                },
-              },
-            },
-					},
-
-					{
-						preset: 'webp1280',
-						filename: '[name][ext]',
-						implementation: ImageMinimizerPlugin.squooshGenerate,
-						options: {
-							resize: {
-								enabled: true,
-								width: 1280,
-							},
-							encodeOptions: {
-								webp: {
-									quality: 85
-								}
-							}
-						}
-					},
-
-					{
-						preset: 'webp1980',
-						filename: '[name]@1980[ext]',
-						implementation: ImageMinimizerPlugin.squooshGenerate,
-						options: {
-							resize: {
-								enabled: true,
-								width: 1980,
-							},
-							encodeOptions: {
-								webp: {
-									quality: 85
-								}
-							}
-						}
-					},
-
-				]
-      })
+			customizeMinimizer()
     ]
   },
 
@@ -291,6 +158,91 @@ export default {
 		}
 	}
 
+}
+
+function customizeMinimizer() {
+	const NORMAL_IMAGE_WIDTH = 1280
+
+	const ENCODE_OPTIONS = {
+		JPG: {
+			mozjpeg: {
+				quality: 85
+			}
+		},
+		PNG: {
+			pngquant: {
+				quality: .85
+			}
+		},
+		WEBP: {
+			webp: {
+				quality: 85,
+			}
+		}
+	}
+
+	function makePreset({ name, width, format }) {
+		format = format.toUpperCase()
+
+		let suffix = (width === NORMAL_IMAGE_WIDTH) ? '' : `@${width}`
+
+		return {
+			preset: name,
+			filename: `[name]${suffix}[ext]`,
+			implementation: ImageMinimizerPlugin.squooshGenerate,
+			filter: filterByWidth(),
+			options: {
+				resize: {
+					enabled: true,
+					width: width,
+				},
+				encodeOptions: ENCODE_OPTIONS[format]
+			}
+		}
+	}
+
+	function filterByWidth(width = NORMAL_IMAGE_WIDTH) {
+		return (source, sourcePath) => {
+			let originalWidth = measureImage(source).width
+			if (originalWidth <= width) return false
+			return true
+		}
+	}
+
+	return new ImageMinimizerPlugin({
+		deleteOriginalAssets: false,
+		generator: [
+
+			{
+				type: 'asset',
+				implementation: ImageMinimizerPlugin.squooshGenerate,
+				filter: filterByWidth(),
+				options: {
+					resize: {
+						enabled: true,
+						width: NORMAL_IMAGE_WIDTH,
+					},
+					encodeOptions: ENCODE_OPTIONS.JPG
+				}
+			},
+
+			{
+				type: 'asset',
+				implementation: ImageMinimizerPlugin.squooshGenerate,
+				options: {
+					encodeOptions: ENCODE_OPTIONS.JPG
+				}
+			},
+
+			makePreset({name: '768', width: 768, format: 'jpg'}),
+			makePreset({name: '1280', width: 1280, format: 'jpg'}),
+			makePreset({name: '1980', width: 1980, format: 'jpg'}),
+			makePreset({name: 'webp768', width: 768, format: 'webp'}),
+			makePreset({name: 'webp1280', width: 1280, format: 'webp'}),
+			makePreset({name: 'webp1980', width: 1980, format: 'webp'}),
+
+		]
+	})
 }
 
 function makeTemplatesPlugins() {

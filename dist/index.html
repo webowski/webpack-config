@@ -74,11 +74,13 @@
 	<main class="Main">
 		
 			<div class="Hero">
-				<picture class="Hero__image" src:768="media/hero@768.jpg" src:1980="media/hero@1980.jpg" src:webp768="media/hero@768.webp" src:webp="media/hero.webp" src:webp1980="media/hero@1980.webp">
-						<source media="(max-width: 767px)" srcset="media/hero.webp">
-						<source srcset="media/hero.webp" type="image/webp">
-						<img src="media/hero.jpg" srcset="media/hero.jpg" alt="Hero image alt">
-					</picture>
+				<picture class="Hero__image">
+					<source srcset="media/hero.webp" type="image/webp">
+					<img src="media/hero.jpg" srcset="media/hero@768.jpg 768w" alt="Hero image alt">
+				</picture>
+				jpg
+				1280
+				src:webp1980,src:webp,src:webp768,src:1980,src:768
 			</div>
 		
 			<div class="Section">

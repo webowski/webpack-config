@@ -1,5 +1,6 @@
 const path        = require('path')
 const Handlebars  = require('handlebars')
+const { match } = require('assert')
 const __dir       = path.resolve('src')
 
 class PathsGen {
@@ -39,42 +40,109 @@ function makeAttributesString(obj) {
 	return attributes
 }
 
-module.exports = function(options) {
-		let src = options.hash.src
-		delete options.hash.src
+function getSrc(attributeName, options) {
+	let src
+	let width = getWidth(attributeName)
 
-		let altText = ''
-		if (options.hash.hasOwnProperty('alt')) {
-			altText = options.hash.alt
-			delete options.hash.alt
+	if (options.hash.hasOwnProperty(attributeName)) {
+		src = `${options.hash[attributeName]} ${width}w`
+	}
+
+	return src
+}
+
+function getWidth(attribute) {
+	let regExp = new RegExp(/src\:[a-z]*(\d*)/)
+	let width = regExp.exec(attribute)[1]
+	return width
+}
+
+const DEFAULT_FORMAT = 'jpg'
+const DEFAULT_WIDTH = 1280
+
+function getFormat(attribute) {
+	let regExp = new RegExp(/src\:?([a-z]*)(\d*)/)
+	let result = regExp.exec(attribute)
+	let format = result[1] || DEFAULT_FORMAT
+	let width = result[2] || DEFAULT_WIDTH
+
+	return [
+		attribute,
+		format,
+		width
+	]
+}
+
+function makeSrcset(attributes) {
+	attributes.forEach((src, index) => {
+
+	})
+
+	// srcs = srcs.join(', ')
+	attributes.join(', ')
+	return srcset
+}
+
+function filterAttributes(options) {
+	let srcs = []
+
+	for (let attribute in options.hash) {
+		if (attribute.match(/^src/)) {
+			srcs.push(attribute)
+			delete options.hash[attribute]
 		}
+	}
 
-		let attributes = makeAttributesString(options.hash)
-		let paths = new PathsGen(src)
+	return srcs
+}
 
-		// // let images = getImages(src)
-		// // let imageSrc = path.resolve(__dir, 'media/hero.jpg')
+module.exports = function(options) {
+	let src = options.hash.src
+	delete options.hash.src
 
-		// let imports = []
-		// let presets = ['1x', 'sm', 'webp1x', 'webpSm']
+	let pths = {}
+	pths['srcset'] = getSrc('src:768', options)
 
-		// if (1 == 1) {
-		// 	// import(/* webpackMode: "eager" */ '../../../media/hero.jpg?as=webp1x').then((module) => {})
+	let srcs = filterAttributes(options)
 
-		// 	presets.forEach(preset => {
-		// 		imports.push(
-		// 			`\nimport(/* webpackMode: "eager" */ '${imageSrc}?as=${preset}');`
-		// 		)
-		// 	})
-		// }
+	let altText = ''
+	if (options.hash.hasOwnProperty('alt')) {
+		altText = options.hash.alt
+		delete options.hash.alt
+	}
 
-		// imports = imports.join(' ')
+	let attributes = makeAttributesString(options.hash)
+	let paths = new PathsGen(src)
 
-		let output = `<picture ${attributes}>
-			<source media="(max-width: 767px)" srcset="${paths.srcsetWebp}">
-			<source srcset="${paths.srcsetWebp}" type="image/webp">
-			<img src="${paths.initial}" srcset="${paths.srcset}" alt="${altText}">
-		</picture>`
+	// // let images = getImages(src)
+	// // let imageSrc = path.resolve(__dir, 'media/hero.jpg')
 
-		return new Handlebars.SafeString(output)
+	// let imports = []
+	// let presets = ['1x', 'sm', 'webp1x', 'webpSm']
+
+	// if (1 == 1) {
+	// 	// import(/* webpackMode: "eager" */ '../../../media/hero.jpg?as=webp1x').then((module) => {})
+
+	// 	presets.forEach(preset => {
+	// 		imports.push(
+	// 			`\nimport(/* webpackMode: "eager" */ '${imageSrc}?as=${preset}');`
+	// 		)
+	// 	})
+	// }
+
+	// imports = imports.join(' ')
+
+	let width2 = getWidth('src:768')
+	// let format = getFormat('src:webp768')
+	let [attribute, format, width] = getFormat('src')
+
+	let output = `<picture ${attributes}>
+		<source srcset="${paths.srcsetWebp}" type="image/webp">
+		<img src="${paths.initial}" srcset="${pths['srcset']}" alt="${altText}">
+	</picture>
+	${format}
+	${width}
+	${srcs}`
+
+	return new Handlebars.SafeString(output)
 }
