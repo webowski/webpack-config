@@ -6,6 +6,7 @@ import HtmlWebpackHarddiskPlugin from 'html-webpack-harddisk-plugin'
 import FileManagerPlugin    from 'filemanager-webpack-plugin'
 import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
 import measureImage         from 'buffer-image-size'
+import sharp                from 'sharp'
 
 let mode = 'development'
 let target = 'web'
@@ -190,7 +191,6 @@ function customizeMinimizer() {
 			preset: name,
 			filename: `[name]${suffix}[ext]`,
 			implementation: ImageMinimizerPlugin.squooshGenerate,
-			filter: filterByWidth(),
 			options: {
 				resize: {
 					enabled: true,
@@ -201,13 +201,13 @@ function customizeMinimizer() {
 		}
 	}
 
-	function filterByWidth(width = NORMAL_IMAGE_WIDTH) {
-		return (source, sourcePath) => {
-			let originalWidth = measureImage(source).width
-			if (originalWidth <= width) return false
-			return true
-		}
-	}
+	// function filterByWidth(width = NORMAL_IMAGE_WIDTH) {
+	// 	return (source, sourcePath) => {
+	// 		let originalWidth = measureImage(source).width
+	// 		if (originalWidth <= width) return false
+	// 		return true
+	// 	}
+	// }
 
 	return new ImageMinimizerPlugin({
 		deleteOriginalAssets: false,
@@ -215,22 +215,14 @@ function customizeMinimizer() {
 
 			{
 				type: 'asset',
-				implementation: ImageMinimizerPlugin.squooshGenerate,
-				filter: filterByWidth(),
+				implementation: sharpGenerate,
 				options: {
-					resize: {
-						enabled: true,
-						width: NORMAL_IMAGE_WIDTH,
-					},
-					encodeOptions: ENCODE_OPTIONS.JPG
-				}
-			},
-
-			{
-				type: 'asset',
-				implementation: ImageMinimizerPlugin.squooshGenerate,
-				options: {
-					encodeOptions: ENCODE_OPTIONS.JPG
+					encodeOptions: ENCODE_OPTIONS.WEBP
+				},
+				filename: (pathData, assetInfo) => {
+					console.log('pathData', pathData)
+					console.log('assetInfo', assetInfo)
+					return '[path][name].webp'
 				}
 			},
 
@@ -276,4 +268,42 @@ function makeTemplatesPlugins() {
 	)
 
 	return templatesPlugins
+}
+
+async function sharpGenerate(original, options) {
+	let result
+
+	try {
+		original.data = await sharp(original.data)
+			.resize({
+				width: 700,
+				withoutEnlargement: true,
+			})
+			.webp({ quality: 85 })
+			.toBuffer()
+
+		original.filename = original.filename.replace('jpg', 'webp')
+
+	} catch (error) {
+		return {
+			filename: original.filename,
+			data: original.data,
+			errors: [error],
+			warnings: []
+		}
+	}
+
+	return {
+		filename: original.filename,
+		data: original.data,
+		warnings: [],
+		errors: [],
+		info: {
+			// Please always set it to prevent double minification
+			minimized: true,
+			// Optional
+			minimizedBy: ["custom-name-of-minimication"]
+		}
+	}
+
 }

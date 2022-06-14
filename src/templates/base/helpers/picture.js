@@ -89,7 +89,8 @@ function filterAttributes(options) {
 	for (let attribute in options.hash) {
 		if (attribute.match(/^src/)) {
 			srcs.push(attribute)
-			delete options.hash[attribute]
+			// console.log(options.hash[attribute])
+			// delete options.hash[attribute]
 		}
 	}
 
