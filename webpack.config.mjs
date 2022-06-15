@@ -210,20 +210,23 @@ function customizeMinimizer() {
 	// }
 
 	return new ImageMinimizerPlugin({
-		deleteOriginalAssets: false,
+		deleteOriginalAssets: true,
+		// loader: false,
+		// concurrency: 1,
 		generator: [
 
 			{
 				type: 'asset',
 				implementation: sharpGenerate,
-				options: {
-					encodeOptions: ENCODE_OPTIONS.WEBP
-				},
-				filename: (pathData, assetInfo) => {
-					console.log('pathData', pathData)
-					console.log('assetInfo', assetInfo)
-					return '[path][name].webp'
-				}
+				// options: {
+				// 	encodeOptions: ENCODE_OPTIONS.WEBP
+				// },
+				// filename: (pathData, assetInfo) => {
+				// 	// console.log('pathData', pathData)
+				// 	// console.log('assetInfo', assetInfo)
+				// 	return '[path][name].webp'
+				// }
+				// filename: '[name][ext]'
 			},
 
 			makePreset({name: '768', width: 768, format: 'jpg'}),
@@ -271,39 +274,42 @@ function makeTemplatesPlugins() {
 }
 
 async function sharpGenerate(original, options) {
-	let result
+	return sharp(original.data)
+		.resize({
+			width: 700,
+			withoutEnlargement: true,
+		})
+		.webp({
+			quality: 85
+		})
+		.toBuffer({
+			resolveWithObject: true
+		})
+		.then(({ data, info }) => {
+			let originalExt = path.extname(original.filename).slice(1).toLowerCase()
+			let outputExt = info.format
+			let newFilename = original.filename.replace(new RegExp(`${originalExt}$`), outputExt)
 
-	try {
-		original.data = await sharp(original.data)
-			.resize({
-				width: 700,
-				withoutEnlargement: true,
-			})
-			.webp({ quality: 85 })
-			.toBuffer()
-
-		original.filename = original.filename.replace('jpg', 'webp')
-
-	} catch (error) {
-		return {
-			filename: original.filename,
-			data: original.data,
-			errors: [error],
-			warnings: []
-		}
-	}
-
-	return {
-		filename: original.filename,
-		data: original.data,
-		warnings: [],
-		errors: [],
-		info: {
-			// Please always set it to prevent double minification
-			minimized: true,
-			// Optional
-			minimizedBy: ["custom-name-of-minimication"]
-		}
-	}
-
+			return {
+				filename: newFilename,
+				data: data,
+				warnings: [...original.warnings],
+				errors: [...original.errors],
+				info: {
+					...original.info,
+					// Please always set it to prevent double minification
+					generated: true,
+					// Optional
+					generatedBy: original.info && original.info.generatedBy ? ["imagemin", ...original.info.generatedBy] : ["imagemin"]
+				}
+			}
+		})
+		.catch(error => {
+			return {
+				filename: original.filename,
+				data: original.data,
+				errors: [error],
+				warnings: []
+			}
+		})
 }
