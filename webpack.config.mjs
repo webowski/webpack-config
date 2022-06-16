@@ -4,9 +4,8 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import HtmlWebpackPlugin    from 'html-webpack-plugin'
 import HtmlWebpackHarddiskPlugin from 'html-webpack-harddisk-plugin'
 import FileManagerPlugin    from 'filemanager-webpack-plugin'
-import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
-import measureImage         from 'buffer-image-size'
-import sharp                from 'sharp'
+import FileListPlugin       from './build/FileListPlugin/index.js'
+import customizeMinimizer   from './build/CustomizeMinimizer/index.js'
 
 let mode = 'development'
 let target = 'web'
@@ -127,7 +126,11 @@ export default {
 			runOnceInWatchMode: true
 		}),
 
-		...makeTemplatesPlugins()
+		...makeTemplatesPlugins(),
+
+		new FileListPlugin({
+      outputFile: 'my-assets.md',
+    }),
 
 	],
 
@@ -161,82 +164,6 @@ export default {
 
 }
 
-function customizeMinimizer() {
-	const NORMAL_IMAGE_WIDTH = 1280
-
-	const ENCODE_OPTIONS = {
-		JPG: {
-			mozjpeg: {
-				quality: 85
-			}
-		},
-		PNG: {
-			pngquant: {
-				quality: .85
-			}
-		},
-		WEBP: {
-			webp: {
-				quality: 85,
-			}
-		}
-	}
-
-	function makePreset({ name, width, format }) {
-		format = format.toUpperCase()
-
-		let suffix = (width === NORMAL_IMAGE_WIDTH) ? '' : `@${width}`
-
-		return {
-			preset: name,
-			filename: `[name]${suffix}[ext]`,
-			implementation: ImageMinimizerPlugin.squooshGenerate,
-			options: {
-				resize: {
-					enabled: true,
-					width: width,
-				},
-				encodeOptions: ENCODE_OPTIONS[format]
-			}
-		}
-	}
-
-	// function filterByWidth(width = NORMAL_IMAGE_WIDTH) {
-	// 	return (source, sourcePath) => {
-	// 		let originalWidth = measureImage(source).width
-	// 		if (originalWidth <= width) return false
-	// 		return true
-	// 	}
-	// }
-
-	return new ImageMinimizerPlugin({
-		deleteOriginalAssets: true,
-		// loader: false,
-		// concurrency: 3,
-		generator: [
-
-			{
-				type: 'asset',
-				implementation: sharpGenerate,
-				// options: {
-				// 	encodeOptions: ENCODE_OPTIONS.WEBP
-				// },
-				// filename: (pathData, assetInfo) => {
-				// 	return '[path][name][ext]'
-				// }
-			},
-
-			makePreset({name: '768', width: 768, format: 'jpg'}),
-			makePreset({name: '1280', width: 1280, format: 'jpg'}),
-			makePreset({name: '1980', width: 1980, format: 'jpg'}),
-			makePreset({name: 'webp768', width: 768, format: 'webp'}),
-			makePreset({name: 'webp1280', width: 1280, format: 'webp'}),
-			makePreset({name: 'webp1980', width: 1980, format: 'webp'}),
-
-		]
-	})
-}
-
 function makeTemplatesPlugins() {
 
 	const templates = fs
@@ -268,72 +195,4 @@ function makeTemplatesPlugins() {
 	)
 
 	return templatesPlugins
-}
-
-async function sharpGenerate(original, options) {
-	const sharpStream = sharp(original.data)
-		.resize({
-			width: 768,
-			withoutEnlargement: true,
-		})
-
-	const sharpPromises = []
-
-	sharpPromises.push(
-		sharpStream
-			.clone()
-			.toFormat('jpeg', { quality: 85 })
-			.toBuffer({
-				resolveWithObject: true
-			})
-	)
-
-	let webpFilePath = path.resolve('dist', changeExt(original.filename, 'webp'))
-	sharpPromises.push(
-		sharpStream
-			.clone()
-			.toFormat('webp', { quality: 85 })
-			.toFile(webpFilePath)
-	)
-
-	let pngFilePath = path.resolve('dist', changeExt(original.filename, 'png'))
-	sharpPromises.push(
-		sharpStream
-			.clone()
-			.toFormat('png', { quality: 85 })
-			.toFile(pngFilePath)
-	)
-
-	return Promise.all(sharpPromises)
-		.then(results => {
-			let { data, info } = results[0]
-			// let outputExt = info.format
-			let newFilename = changeExt(original.filename, 'jpg')
-
-			return {
-				filename: newFilename,
-				data: data,
-				warnings: [...original.warnings],
-				errors: [...original.errors],
-				info: {
-					...original.info,
-					generated: true,
-					generatedBy: original.info && original.info.generatedBy ? ['sharp', ...original.info.generatedBy] : ['sharp']
-				}
-			}
-		})
-		.catch(error => {
-			return {
-				filename: original.filename,
-				data: original.data,
-				errors: [error],
-				warnings: []
-			}
-		})
-}
-
-function changeExt(inputPath, newExt) {
-	let inputExt = path.extname(inputPath).slice(1).toLowerCase()
-	let outputPath = inputPath.replace(new RegExp(`${inputExt}$`), newExt)
-	return outputPath
 }
