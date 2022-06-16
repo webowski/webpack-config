@@ -1,6 +1,6 @@
-
 import path                 from 'path'
 import sharp                from 'sharp'
+import fs                   from 'fs-extra'
 
 export default async function sharpGenerate(original, options) {
 	const sharpStream = sharp(original.data)
@@ -13,11 +13,17 @@ export default async function sharpGenerate(original, options) {
 
 	sharpPromises.push(
 		sharpStream
-			.clone()
-			.toFormat('jpeg', { quality: 85 })
-			.toBuffer({
-				resolveWithObject: true
-			})
+		.clone()
+		.toFormat('jpeg', { quality: 85 })
+		.toBuffer({
+			resolveWithObject: true
+		})
+	)
+
+	let directory = path.dirname(original.filename)
+
+	sharpPromises.push(
+		fs.promises.mkdir(`dist/${directory}`, { recursive: true })
 	)
 
 	let webpFilePath = path.resolve('dist', changeExt(original.filename, 'webp'))
