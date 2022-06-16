@@ -125,8 +125,7 @@ export default {
 		}),
 
 		...makeTemplatesPlugins({
-			templatesPath: 'src/templates/',
-			dataJsonPath: 'src/templates/base/data.json'
+			templatesPath: 'src/templates/'
 		}),
 
 		new FileListPlugin({

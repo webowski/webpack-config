@@ -3,10 +3,11 @@ import { resolve }               from 'path'
 import HtmlWebpackPlugin         from 'html-webpack-plugin'
 import HtmlWebpackHarddiskPlugin from 'html-webpack-harddisk-plugin'
 
-export default function makeTemplatesPlugins({
-	templatesPath = 'src/templates/',
-	dataJsonPath = 'src/templates/base/data.json'
-}) {
+export default function makeTemplatesPlugins(args) {
+	let {
+		templatesPath = 'src/templates/',
+		dataJsonPath = 'src/templates/base/data.json'
+	} = {...args}
 
 	const templates = fs
 		.readdirSync(resolve(templatesPath))
