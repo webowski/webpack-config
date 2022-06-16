@@ -1,9 +1,7 @@
-import fs                   from 'fs-extra'
 import path, { resolve }    from 'path'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import HtmlWebpackPlugin    from 'html-webpack-plugin'
-import HtmlWebpackHarddiskPlugin from 'html-webpack-harddisk-plugin'
 import FileManagerPlugin    from 'filemanager-webpack-plugin'
+import makeTemplatesPlugins from './build/MakeTemplatesPlugins/index.js'
 import FileListPlugin       from './build/FileListPlugin/index.js'
 import customizeMinimizer   from './build/CustomizeMinimizer/index.js'
 
@@ -126,7 +124,10 @@ export default {
 			runOnceInWatchMode: true
 		}),
 
-		...makeTemplatesPlugins(),
+		...makeTemplatesPlugins({
+			templatesPath: 'src/templates/',
+			dataJsonPath: 'src/templates/base/data.json'
+		}),
 
 		new FileListPlugin({
       outputFile: 'my-assets.md',
@@ -162,37 +163,4 @@ export default {
 		}
 	}
 
-}
-
-function makeTemplatesPlugins() {
-
-	const templates = fs
-		.readdirSync(resolve('src/templates/'))
-		.filter(filename => {
-			return filename.match(/\.hbs/)
-		})
-
-	let templatesPlugins = []
-
-	templates.forEach(templateName => {
-		templatesPlugins.push(
-			new HtmlWebpackPlugin({
-				template: 'src/templates/' + templateName,
-				filename: templateName.replace('.hbs', '.html'),
-				minify: false,
-				inject: false,
-				templateParameters: JSON.parse(
-					fs.readFileSync(resolve('src/templates/base/data.json'))
-				),
-				cache: true,
-				alwaysWriteToDisk: true
-			})
-		)
-	})
-
-	templatesPlugins.push(
-		new HtmlWebpackHarddiskPlugin
-	)
-
-	return templatesPlugins
 }
