@@ -1,6 +1,6 @@
 import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
 import measureImage         from 'buffer-image-size'
-import sharpGenerate        from '../SharpGenerate/index.js'
+import { sharpGenerate }    from '../ImageMultiFormatPlugin/index.js'
 
 export default function customizeMinimizer() {
 	const NORMAL_IMAGE_WIDTH = 1280

@@ -133,9 +133,7 @@ export default {
       outputFile: 'my-assets.md',
     }),
 
-		new ImageMultiFormatPlugin({
-			outputFile: 'new-image.json'
-		})
+		new ImageMultiFormatPlugin()
 
 	],
 
