@@ -1,9 +1,10 @@
-import path, { resolve }    from 'path'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import FileManagerPlugin    from 'filemanager-webpack-plugin'
-import makeTemplatesPlugins from './build/MakeTemplatesPlugins/index.js'
-import FileListPlugin       from './build/FileListPlugin/index.js'
-import customizeMinimizer   from './build/CustomizeMinimizer/index.js'
+import path, { resolve }      from 'path'
+import MiniCssExtractPlugin   from 'mini-css-extract-plugin'
+import FileManagerPlugin      from 'filemanager-webpack-plugin'
+import makeTemplatesPlugins   from './build/MakeTemplatesPlugins/index.js'
+import FileListPlugin         from './build/FileListPlugin/index.js'
+import customizeMinimizer     from './build/CustomizeMinimizer/index.js'
+import ImageMultiFormatPlugin from './build/ImageMultiFormatPlugin/index.js'
 
 let mode = 'development'
 let target = 'web'
@@ -132,62 +133,9 @@ export default {
       outputFile: 'my-assets.md',
     }),
 
-		new (class MyPlugin {
-			static defaultOptions = {
-				outputFile: 'new-image'
-			}
-
-			constructor(options = {}) {
-				this.options = { ...MyPlugin.defaultOptions, ...options }
-			}
-
-			apply(compiler) {
-
-				const pluginName = FileListPlugin.name
-				const { webpack } = compiler
-				const { Compilation } = webpack
-				const { RawSource } = webpack.sources
-
-				compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
-					compilation.hooks.processAssets.tap(
-						{
-							name: pluginName,
-							stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
-						},
-						(assets) => {
-							let source = ''
-
-							// Object.entries(assets).forEach(([pathname, source]) => {
-							// 	source = source + `— ${pathname}: ${source.size()} bytes \n`
-							// 	source = source + `— ${pathname}: ${source.source()} bytes \n`
-							// 	source = source + `— ${pathname}: ${JSON.stringify(source)} bytes \n`
-
-							// 	if (pathname.find())
-							// })
-							// source = JSON.stringify(assets)
-
-							for (let asset in assets) {
-								// let assetText = JSON.stringify(assets[asset].buffer())
-								// let assetText = JSON.stringify(assets[asset].source())
-								let assetText = JSON.stringify(asset)
-								source = source + `${assetText}\n\n\n
-----------------------------------------------------\n\n\n`
-							}
-
-							source = JSON.stringify(compilation.hooks)
-							// source = assets['media/hero.jpg'].source()
-
-							compilation.emitAsset(
-								this.options.outputFile,
-								new RawSource(source)
-							)
-
-						}
-					)
-				})
-
-			}
-		})({ outputFile: 'new-image.json' })
+		new ImageMultiFormatPlugin({
+			outputFile: 'new-image.json'
+		})
 
 	],
 
