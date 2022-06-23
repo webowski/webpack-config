@@ -14,8 +14,6 @@ class ImageMultiFormatPlugin {
 
 	constructor(options = {}) {
 		this.options = { ...ImageMultiFormatPlugin.defaultOptions, ...options }
-
-
 	}
 
 	apply(compiler) {
@@ -35,10 +33,7 @@ class ImageMultiFormatPlugin {
 				(assets) => {
 					let source = ''
 
-					for (let asset in assets) {
-						let assetText = JSON.stringify(asset)
-						source = source + `${assetText}\n---\n`
-					}
+					let imageAssets = this.getImageAssets(assets)
 
 					source = assets['images/bg.jpg'].source()
 
@@ -52,9 +47,26 @@ class ImageMultiFormatPlugin {
 		})
 	}
 
-	// filterAssets(assets) {
+	getImageAssets(assets) {
+		// for (let asset in assets) {
+		// 	let assetText = JSON.stringify(asset)
+		// 	source = source + `${assetText}\n---\n`
+		// }
 
-	// }
+		// let regExp = new RegExp(/\.(png|jpe?g|gif|webp|svg)$/i)
+
+		// let imageAssets = Object.keys(assets).filter(assetName => {
+		// })
+
+		// Object.entries(assets).map(([filename, source]) => {
+		// 		console.log(filename)
+		// 	})
+
+		// console.log(assets)
+		// assets.filter(asset => {
+		// 	return true
+		// })
+	}
 
 	// formatImage(source) {
 	// 	source = 'image'
