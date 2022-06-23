@@ -24,7 +24,6 @@ class ImageMultiFormatPlugin {
 		const { RawSource } = webpack.sources
 
 		const context = {
-			thisClass,
 			pluginName,
 			compiler,
 			webpack,
@@ -32,7 +31,10 @@ class ImageMultiFormatPlugin {
 			RawSource
 		}
 
-		compiler.hooks.thisCompilation.tap(pluginName, this.compilationTapCallback.bind(context))
+		compiler.hooks.thisCompilation.tap(
+			pluginName,
+			this.compilationTapCallback.bind(this, context)
+		)
 
 		// compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
 		// 	compilation.hooks.processAssets.tap(
@@ -59,15 +61,17 @@ class ImageMultiFormatPlugin {
 		// })
 	}
 
-	compilationTapCallback(compilation) {
+	compilationTapCallback() {
+		let context = arguments[0]
+		let compilation = arguments[1]
+
 		let {
-			thisClass,
 			pluginName,
-			compiler,
-			webpack,
 			Compilation,
 			RawSource
-		} = this
+		} = context
+
+		context.compilation = compilation
 
 		compilation.hooks.processAssets.tap(
 
@@ -76,19 +80,42 @@ class ImageMultiFormatPlugin {
 				stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
 			},
 
-			(assets) => {
-				let source = ''
+			this.processAssetsTapCallback.bind(this, context)
 
-				let imageAssets = thisClass.getImageAssets(assets)
+			// (assets) => {
+			// 	let source = ''
 
-				source = assets['images/bg.jpg'].source()
+			// 	let imageAssets = this.getImageAssets(assets)
 
-				compilation.emitAsset(
-					thisClass.options.outputFile,
-					new RawSource(source)
-				)
-			}
+			// 	source = assets['images/bg.jpg'].source()
 
+			// 	compilation.emitAsset(
+			// 		this.options.outputFile,
+			// 		new RawSource(source)
+			// 	)
+			// }
+
+		)
+	}
+
+	processAssetsTapCallback() {
+		let context = arguments[0]
+		let assets = arguments[1]
+
+		let {
+			compilation,
+			RawSource
+		} = context
+
+		let source
+
+		// let imageAssets = this.getImageAssets(assets)
+
+		source = assets['images/bg.jpg'].source()
+
+		compilation.emitAsset(
+			this.options.outputFile,
+			new RawSource(source)
 		)
 	}
 
