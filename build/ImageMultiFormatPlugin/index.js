@@ -17,34 +17,79 @@ class ImageMultiFormatPlugin {
 	}
 
 	apply(compiler) {
+		const thisClass = this
 		const pluginName = ImageMultiFormatPlugin.name
 		const { webpack } = compiler
 		const { Compilation } = webpack
 		const { RawSource } = webpack.sources
 
-		compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
-			compilation.hooks.processAssets.tap(
+		const context = {
+			thisClass,
+			pluginName,
+			compiler,
+			webpack,
+			Compilation,
+			RawSource
+		}
 
-				{
-					name: pluginName,
-					stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
-				},
+		compiler.hooks.thisCompilation.tap(pluginName, this.compilationTapCallback.bind(context))
 
-				(assets) => {
-					let source = ''
+		// compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
+		// 	compilation.hooks.processAssets.tap(
 
-					let imageAssets = this.getImageAssets(assets)
+		// 		{
+		// 			name: pluginName,
+		// 			stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
+		// 		},
 
-					source = assets['images/bg.jpg'].source()
+		// 		(assets) => {
+		// 			let source = ''
 
-					compilation.emitAsset(
-						this.options.outputFile,
-						new RawSource(source)
-					)
-				}
+		// 			let imageAssets = this.getImageAssets(assets)
 
-			)
-		})
+		// 			source = assets['images/bg.jpg'].source()
+
+		// 			compilation.emitAsset(
+		// 				this.options.outputFile,
+		// 				new RawSource(source)
+		// 			)
+		// 		}
+
+		// 	)
+		// })
+	}
+
+	compilationTapCallback(compilation) {
+		let {
+			thisClass,
+			pluginName,
+			compiler,
+			webpack,
+			Compilation,
+			RawSource
+		} = this
+
+		compilation.hooks.processAssets.tap(
+
+			{
+				name: pluginName,
+				stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
+			},
+
+			(assets) => {
+				let source = ''
+
+				let imageAssets = thisClass.getImageAssets(assets)
+
+				source = assets['images/bg.jpg'].source()
+
+				compilation.emitAsset(
+					thisClass.options.outputFile,
+					new RawSource(source)
+				)
+			}
+
+		)
 	}
 
 	getImageAssets(assets) {
