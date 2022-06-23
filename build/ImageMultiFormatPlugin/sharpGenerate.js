@@ -13,11 +13,11 @@ export default async function sharpGenerate(original, options) {
 
 	sharpPromises.push(
 		sharpStream
-		.clone()
-		.toFormat('jpeg', { quality: 85 })
-		.toBuffer({
-			resolveWithObject: true
-		})
+			.clone()
+			.toFormat('jpeg', { quality: 85 })
+			.toBuffer({
+				resolveWithObject: true
+			})
 	)
 
 	let directory = path.dirname(original.filename)
@@ -31,7 +31,7 @@ export default async function sharpGenerate(original, options) {
 		sharpStream
 			.clone()
 			.toFormat('webp', { quality: 85 })
-			.toFile(webpFilePath)
+			.toFile(addFileSuffix(webpFilePath, '@768'))
 	)
 
 	let pngFilePath = path.resolve('dist', changeExt(original.filename, 'png'))
@@ -39,7 +39,7 @@ export default async function sharpGenerate(original, options) {
 		sharpStream
 			.clone()
 			.toFormat('png', { quality: 85 })
-			.toFile(pngFilePath)
+			.toFile(addFileSuffix(pngFilePath, '@768'))
 	)
 
 	return Promise.all(sharpPromises)
@@ -47,6 +47,7 @@ export default async function sharpGenerate(original, options) {
 			let { data, info } = results[0]
 			// let outputExt = info.format
 			let newFilename = changeExt(original.filename, 'jpg')
+			newFilename = addFileSuffix(newFilename, '@768')
 
 			return {
 				filename: newFilename,
@@ -73,5 +74,11 @@ export default async function sharpGenerate(original, options) {
 function changeExt(inputPath, newExt) {
 	let inputExt = path.extname(inputPath).slice(1).toLowerCase()
 	let outputPath = inputPath.replace(new RegExp(`${inputExt}$`), newExt)
+	return outputPath
+}
+
+function addFileSuffix(inputPath, suffix) {
+	let inputExt = path.extname(inputPath).toLowerCase()
+	let outputPath = inputPath.replace(new RegExp(`${inputExt}$`), suffix + inputExt)
 	return outputPath
 }

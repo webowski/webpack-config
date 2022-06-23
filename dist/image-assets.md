@@ -1,8 +1,8 @@
-"images/bg.jpg"
----
 "styles/styles.min.css"
 ---
 "./scripts/bundle.min.js"
+---
+"images/bg@768.jpg"
 ---
 "styles/styles.min.css.map"
 ---
