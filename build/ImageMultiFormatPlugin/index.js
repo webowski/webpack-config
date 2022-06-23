@@ -1,6 +1,3 @@
-import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
-import sharpGenerate from './sharpGenerate.js'
-
 const EXTS = {
   'jpeg': 'jpg',
   'jpg': 'jpg',
@@ -11,11 +8,14 @@ const EXTS = {
 
 class ImageMultiFormatPlugin {
 	static defaultOptions = {
-		outputFile: 'images/new-image.jpg'
+		outputFile: 'images/bg@processed.jpg',
+		denyOriginalAssets: true,
 	}
 
 	constructor(options = {}) {
 		this.options = { ...ImageMultiFormatPlugin.defaultOptions, ...options }
+
+
 	}
 
 	apply(compiler) {
@@ -46,7 +46,7 @@ class ImageMultiFormatPlugin {
 				source = source + `${assetText}\n---\n`
 			}
 
-			source = assets['images/bg@768.jpg'].source()
+			source = assets['images/bg.jpg'].source()
 
 			compilation.emitAsset(
 				thisPlugin.options.outputFile,
@@ -56,10 +56,18 @@ class ImageMultiFormatPlugin {
 
 	}
 
+	// formatImage(source) {
+	// 	source = 'image'
+	// 	return new Buffer.from(source)
+	// }
+
+	// addToAssets() {
+
+	// }
+
+	// saveImageFile() {
+
+	// }
 }
 
 export default ImageMultiFormatPlugin
-
-export {
-	sharpGenerate
-}

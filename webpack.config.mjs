@@ -137,12 +137,12 @@ export default {
 
 	],
 
-	optimization: {
-    minimizer: [
-      '...',
-			customizeMinimizer()
-    ]
-  },
+	// optimization: {
+  //   minimizer: [
+  //     '...',
+	// 		customizeMinimizer()
+  //   ]
+  // },
 
 	resolve: {
 		// extensions: ['.js', '.jsx'],
