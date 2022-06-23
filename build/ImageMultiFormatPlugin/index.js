@@ -1,6 +1,15 @@
 import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
 import sharpGenerate from './sharpGenerate.js'
 
+const EXTS = {
+	// 'format': 'ext'
+  'jpeg': 'jpg',
+  'jpg': 'jpg',
+  'png': 'png',
+  'webp': 'webp',
+  'avif': 'avif',
+}
+
 class ImageMultiFormatPlugin {
 	static defaultOptions = {
 		outputFile: 'new-image.json'
