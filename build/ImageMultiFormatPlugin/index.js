@@ -2,7 +2,6 @@ import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
 import sharpGenerate from './sharpGenerate.js'
 
 const EXTS = {
-	// 'format': 'ext'
   'jpeg': 'jpg',
   'jpg': 'jpg',
   'png': 'png',
@@ -12,7 +11,7 @@ const EXTS = {
 
 class ImageMultiFormatPlugin {
 	static defaultOptions = {
-		outputFile: 'new-image.json'
+		outputFile: 'images/new-image.jpg'
 	}
 
 	constructor(options = {}) {
@@ -29,13 +28,6 @@ class ImageMultiFormatPlugin {
 		compiler.hooks.thisCompilation.tap(pluginName, thisPluginTapCallback)
 
 		function thisPluginTapCallback(compilation) {
-
-			// let hooks = ImageMinimizerPlugin.getHooks(compilation)
-
-			let hooks = compiler.hooks.thisCompilation.taps.filter( i => {
-				return ['ImageMinimizerPlugin'].includes( i.name )
-			})[0]
-
 			compilation.hooks.processAssets.tap({
 					name: pluginName,
 					stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
@@ -49,34 +41,12 @@ class ImageMultiFormatPlugin {
 			let assets = arguments[1]
 			let source = ''
 
-			// Object.entries(assets).forEach(([pathname, source]) => {
-			// 	source = source + `— ${pathname}: ${source.size()} bytes \n`
-			// 	source = source + `— ${pathname}: ${source.source()} bytes \n`
-			// 	source = source + `— ${pathname}: ${JSON.stringify(source)} bytes \n`
-
-			// 	if (pathname.find())
-			// })
-
-			// source = JSON.stringify(assets)
-
-
-			// Assets list
-			// =======================================
-			thisPlugin.options.outputFile = 'image-assets.md'
 			for (let asset in assets) {
-				// let assetText = JSON.stringify(assets[asset].buffer())
-				// let assetText = JSON.stringify(assets[asset].source())
-				// if (new RegExp(asset.test()))
 				let assetText = JSON.stringify(asset)
 				source = source + `${assetText}\n---\n`
 			}
 
-
-			// Inits sharpGenerate
-			// =======================================
-			// thisPlugin.options.outputFile = 'new-image.jpg'
-			// source = assets['images/bg.jpg'].source()
-
+			source = assets['images/bg@768.jpg'].source()
 
 			compilation.emitAsset(
 				thisPlugin.options.outputFile,
