@@ -19,42 +19,42 @@ class ImageMultiFormatPlugin {
 	}
 
 	apply(compiler) {
-		const thisPlugin = this
 		const pluginName = ImageMultiFormatPlugin.name
 		const { webpack } = compiler
 		const { Compilation } = webpack
 		const { RawSource } = webpack.sources
 
-		compiler.hooks.thisCompilation.tap(pluginName, thisPluginTapCallback)
+		compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
+			compilation.hooks.processAssets.tap(
 
-		function thisPluginTapCallback(compilation) {
-			compilation.hooks.processAssets.tap({
+				{
 					name: pluginName,
 					stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
 				},
-				processAssetsTapCallback.bind(null, compilation) // second argument will be the assets
+
+				(assets) => {
+					let source = ''
+
+					for (let asset in assets) {
+						let assetText = JSON.stringify(asset)
+						source = source + `${assetText}\n---\n`
+					}
+
+					source = assets['images/bg.jpg'].source()
+
+					compilation.emitAsset(
+						this.options.outputFile,
+						new RawSource(source)
+					)
+				}
+
 			)
-		}
-
-		function processAssetsTapCallback() {
-			let compilation = arguments[0]
-			let assets = arguments[1]
-			let source = ''
-
-			for (let asset in assets) {
-				let assetText = JSON.stringify(asset)
-				source = source + `${assetText}\n---\n`
-			}
-
-			source = assets['images/bg.jpg'].source()
-
-			compilation.emitAsset(
-				thisPlugin.options.outputFile,
-				new RawSource(source)
-			)
-		}
-
+		})
 	}
+
+	// filterAssets(assets) {
+
+	// }
 
 	// formatImage(source) {
 	// 	source = 'image'
