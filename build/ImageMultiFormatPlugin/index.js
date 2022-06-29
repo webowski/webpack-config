@@ -106,7 +106,7 @@ class ImageMultiFormatPlugin {
 			RawSource
 		} = context
 
-		let source
+		let source = ''
 
 		// let imageAssets = this.getImageAssets(assets)
 		// source = assets['images/bg.jpg'].source()
