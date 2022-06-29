@@ -8,10 +8,12 @@
     "clean": "rm -rf dist"
   },
   "browserslist": [
-    "last 4 versions",
-    "> 0.5%",
-    "not IE > 0",
-    "op_mini all"
+    "last 2 versions",
+    "> 1%",
+    "not ie > 0",
+    "not ie_mob > 0",
+    "not op_mini all",
+    "not dead"
   ],
   "devDependencies": {
     "@babel/core": "^7.18.0",
