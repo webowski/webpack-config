@@ -68,7 +68,6 @@ class ImageMultiFormatPlugin {
 		let {
 			pluginName,
 			Compilation,
-			RawSource
 		} = context
 
 		context.compilation = compilation
@@ -110,8 +109,7 @@ class ImageMultiFormatPlugin {
 		let source
 
 		// let imageAssets = this.getImageAssets(assets)
-
-		source = assets['images/bg.jpg'].source()
+		// source = assets['images/bg.jpg'].source()
 
 		compilation.emitAsset(
 			this.options.outputFile,
