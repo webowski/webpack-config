@@ -1,5 +1,7 @@
 {
   "private": true,
+  "author": "webowski",
+  "license": "ISC",
   "scripts": {
     "start": "webpack serve",
     "watch": "webpack --watch",
@@ -12,7 +14,10 @@
     "> 1%",
     "not ie > 0",
     "not ie_mob > 0",
-    "not op_mini all"
+    "not baidu > 0",
+    "not and_qq > 0",
+    "not op_mini all",
+    "not dead"
   ],
   "devDependencies": {
     "@babel/core": "^7.18.0",
