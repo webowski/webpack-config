@@ -1,6 +1,6 @@
 body {
 	margin: 0;
-	// background-color: $bg;
+	background-color: var(--bg);
 	color: var(--text);
 	font-family: 'Ubuntu', sans-serif;
 }
@@ -21,17 +21,10 @@ h1 {
 	font-size: 4rem;
 }
 
-// main {
-// 	min-height: 100vh;
-// 	display: flex;
-// 	align-items: center;
-// 	justify-content: flex-start;
-// }
-
 .Section {
 	padding-top: 3rem;
 	padding-bottom: 3rem;
-	background-image: url('../images/bg.jpg?format=optim');
+	background-image: url('../images/bg.jpg');
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;

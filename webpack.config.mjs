@@ -60,8 +60,13 @@ export default {
 				type: 'asset/resource',
 				generator: {
 					// publicPath: (pathData) => {},
-					// outputPath: (pathData) => {},
+					// outputPath: (pathData) => {
+					// 	console.log(pathData)
+					// 	return '.'
+					// },
 					filename: (pathData) => {
+						// console.log(pathData.module.rawRequest)
+						// console.log(pathData)
 						let relativePath = pathData.module.resourceResolveData.relativePath
 						let dirName = path.dirname(relativePath).replace('./src/', '')
 						return dirName + '/[name][ext]'
@@ -99,7 +104,8 @@ export default {
 							resolve('src/templates/components'),
 						],
 						// debug: true,
-						inlineRequires: '\/media\/' // resources copying
+						inlineRequires: /(media|images)\//
+						// resources copying
 					}
 				}]
 			},
@@ -129,11 +135,11 @@ export default {
 			templatesPath: 'src/templates/'
 		}),
 
-		new FileListPlugin({
-      outputFile: 'my-assets.md',
-    }),
+		// new FileListPlugin({
+    //   outputFile: 'my-assets.md',
+    // }),
 
-		new ImageMultiFormatPlugin()
+		// new ImageMultiFormatPlugin()
 
 	],
 
